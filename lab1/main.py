@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from openpyxl import Workbook, load_workbook
+import random
 
 
 class FCallsUnique:
@@ -42,13 +44,13 @@ def expansion_method(f, x_0, d, alfa, n_max=1000):
     x = [x_0, x_1]
 
     if f(x[1]) == f(x[0]):
-        return x[0], x[1]
+        return x[0], x[1], f.calls
 
     if f(x[1]) > f(x[0]):
         d = -d
         x[1] = x[0] + d
         if f(x[1]) >= f(x[0]):
-            return x[1], (x[0] - d)
+            return x[1], (x[0] - d), f.calls
 
     while True:
         if f.calls > n_max:
@@ -60,9 +62,9 @@ def expansion_method(f, x_0, d, alfa, n_max=1000):
             break
 
     if d > 0:
-        return x[i - 1], x[i + 1]
+        return x[i - 1], x[i + 1], f.calls
 
-    return x[i + 1], x[i - 1]
+    return x[i + 1], x[i - 1], f.calls
 
 
 def fibonacci(n):
@@ -72,7 +74,8 @@ def fibonacci(n):
     return fib
 
 
-def fibonacci_method(a, b, epsilon):
+def fibonacci_method(f, a, b, epsilon):
+    f = FCallsUnique(f)
     n = 1
     fib = fibonacci(100)
 
@@ -96,7 +99,7 @@ def fibonacci_method(a, b, epsilon):
             c_i = d_i
             d_i = a_i + b_i - c_i
 
-    return (c_i + d_i) / 2
+    return (c_i + d_i) / 2, f.calls
 
 
 def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
@@ -133,8 +136,34 @@ def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100
     raise RuntimeError("Przekroczono maksymalną liczbę iteracji bez zbieżności.")
 
 
+def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
+    file_name = "xlsx1.xlsx"
+    try:
+        # Próba załadowania istniejącego pliku
+        workbook = load_workbook(file_name)
+    except FileNotFoundError:
+        # Jeśli plik nie istnieje, tworzymy nowy
+        workbook = Workbook()
+
+    # Wybieramy aktywny arkusz (pierwszy z dostępnych)
+    sheet = workbook.active
+
+    sheet[f'C{line}'] = x0
+    sheet[f'D{line}'] = a
+    sheet[f'E{line}'] = b
+    sheet[f'F{line}'] = n
+    sheet[f'G{line}'] = fib_min
+    sheet[f'H{line}'] = f(fib_min)
+    sheet[f'I{line}'] = fib_ncalls
+    sheet[f'J{line}'] = "lokalne" if f(fib_min) > -0.1 else "globalne"
+
+    # Zapisujemy zmiany w pliku
+    workbook.save(file_name)
+    print(f"Wartości zostały zapisane do pliku {file_name} w linii {line}")
+
+
 # Parametry i testy
-x0 = 45
+x0 = random.randint(-100,100)
 d = 1
 alpha = 1.5
 nmax = 100
@@ -142,12 +171,17 @@ epsilon = 0.01
 
 make_plot(f)
 
-expansion_result = expansion_method(f, x0, d, alpha, nmax)
-print("Przedział ekspansji: ", expansion_result)
+for i in range(3, 103):
+    x0 = random.randint(-100, 100)
 
-a, b = expansion_result
-fib_result = fibonacci_method(a, b, epsilon)
-print("Przybliżone minimum Fibonacciego: ", fib_result)
+    expansion_result = expansion_method(f, x0, d, alpha, nmax)
+    print("Przedział ekspansji: ", expansion_result)
+    a, b, fcalls = expansion_result
+
+    fib_result = fibonacci_method(f, a, b, epsilon)
+    print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
+
+    add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], i)
 
 # Test metody Lagrange'a
 c = (a + b) / 2
