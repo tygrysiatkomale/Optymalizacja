@@ -36,7 +36,6 @@ def make_plot(f, range_start=-100, range_stop=100):
 
 
 def expansion_method(f, x_0, d, alfa, N_MAX=1000):
-
     f = FCallsUnique(f)
     i = 0
     x_1 = x_0 + d
@@ -60,8 +59,6 @@ def expansion_method(f, x_0, d, alfa, N_MAX=1000):
         if f(x[i]) <= f(x[i + 1]):
             break
 
-    # print(f"Liczba wywołań funkcji: {f.calls}")
-
     if d > 0:
         return x[i - 1], x[i + 1]
 
@@ -70,29 +67,25 @@ def expansion_method(f, x_0, d, alfa, N_MAX=1000):
 
 def fibonacci(n):
     fib = [0, 1]
-    for i in range(2, n+1):
+    for i in range(2, n + 1):
         fib.append(fib[-1] + fib[-2])
     return fib
 
 
 def metodaFibonacciego(a, b, epsilon):
-    # Krok 1: Znalezienie najmniejszego k, dla którego φk > (b - a) / ε
     n = 1
-    fib = fibonacci(100)  # Generujemy liczby Fibonacciego (potrzebujemy tylko do k)
+    fib = fibonacci(100)
 
     while fib[n] < (b - a) / epsilon:
         n += 1
 
-    # Krok 2: Początkowe wartości
     k = n
     a_i = a
     b_i = b
 
-    # Krok 3 i 4: Początkowe wartości c(0) i d(0)
     c_i = b_i - (fib[k - 1] / fib[k]) * (b_i - a_i)
     d_i = a_i + b_i - c_i
 
-    # Krok 5: Iteracje
     for i in range(k - 2):
         if f(c_i) < f(d_i):
             b_i = d_i
@@ -103,11 +96,44 @@ def metodaFibonacciego(a, b, epsilon):
             c_i = d_i
             d_i = a_i + b_i - c_i
 
-    # Krok 16: Zwrócenie wyniku
     return (c_i + d_i) / 2
 
 
-# Parametry
+def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
+    i = 0
+    while i < max_iter:
+        l = (func(a) * (b ** 2 - c ** 2) + func(b) * (c ** 2 - a ** 2) + func(c) * (a ** 2 - b ** 2))
+        m = (func(a) * (b - c) + func(b) * (c - a) + func(c) * (a - b))
+
+        if m <= 0:
+            raise ValueError("Błąd: podział przez zero lub ujemna wartość w metodzie Lagrange’a.")
+
+        d = 0.5 * l / m
+
+        if a < d < c:
+            if func(d) < func(c):
+                b = c
+                c = d
+            else:
+                a = d
+        elif c < d < b:
+            if func(d) < func(c):
+                a = c
+                c = d
+            else:
+                b = d
+        else:
+            raise ValueError("Błąd: punkt interpolacji d jest poza zakresem przedziału.")
+
+        if abs(b - a) < epsilon or abs(d - c) < gamma:
+            return d
+
+        i += 1
+
+    raise RuntimeError("Przekroczono maksymalną liczbę iteracji bez zbieżności.")
+
+
+# Parametry i testy
 x0 = 45
 d = 1
 alpha = 1.5
@@ -119,11 +145,11 @@ make_plot(f)
 expansion_result = expansion_method(f, x0, d, alpha, nmax)
 print("Przedział ekspansji: ", expansion_result)
 
-    # fibonnaci
 a, b = expansion_result
-
 fib_result = metodaFibonacciego(a, b, epsilon)
 print("Przybliżone minimum Fibonacciego: ", fib_result)
 
-
-
+# Test metody Lagrange'a
+c = (a + b) / 2
+lagrange_result = lagrange_interpolation(f, a, b, c, epsilon)
+print("Przybliżone minimum Lagrange'a: ", lagrange_result)
