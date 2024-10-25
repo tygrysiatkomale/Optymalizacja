@@ -35,7 +35,7 @@ def make_plot(f, range_start=-100, range_stop=100):
     return 0
 
 
-def expansion_method(f, x_0, d, alfa, N_MAX=1000):
+def expansion_method(f, x_0, d, alfa, n_max=1000):
     f = FCallsUnique(f)
     i = 0
     x_1 = x_0 + d
@@ -51,7 +51,7 @@ def expansion_method(f, x_0, d, alfa, N_MAX=1000):
             return x[1], (x[0] - d)
 
     while True:
-        if f.calls > N_MAX:
+        if f.calls > n_max:
             raise ValueError("Error: Przekroczono N_MAX")
         i = i + 1
         x.append(x[0] + (alfa ** i) * d)
@@ -72,7 +72,7 @@ def fibonacci(n):
     return fib
 
 
-def metodaFibonacciego(a, b, epsilon):
+def fibonacci_method(a, b, epsilon):
     n = 1
     fib = fibonacci(100)
 
@@ -146,7 +146,7 @@ expansion_result = expansion_method(f, x0, d, alpha, nmax)
 print("Przedział ekspansji: ", expansion_result)
 
 a, b = expansion_result
-fib_result = metodaFibonacciego(a, b, epsilon)
+fib_result = fibonacci_method(a, b, epsilon)
 print("Przybliżone minimum Fibonacciego: ", fib_result)
 
 # Test metody Lagrange'a
