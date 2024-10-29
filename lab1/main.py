@@ -152,9 +152,9 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
     sheet[f'E{line}'] = b
     sheet[f'F{line}'] = n
     sheet[f'G{line}'] = fib_min
-    sheet[f'H{line}'] = f(fib_min)
+    sheet[f'H{line}'] = user_func.ff1T(fib_min)
     sheet[f'I{line}'] = fib_ncalls
-    sheet[f'J{line}'] = "lokalne" if f(fib_min) > -0.1 else "globalne"
+    sheet[f'J{line}'] = "lokalne" if user_func.ff1T(fib_min) > -0.1 else "globalne"
 
     # Zapisujemy zmiany w pliku
     workbook.save(file_name)
