@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from openpyxl import Workbook, load_workbook
 import random
-
+import user_func
 
 class FCallsUnique:
     def __init__(self, func):
@@ -168,21 +168,21 @@ alpha = 1.5
 nmax = 100
 epsilon = 0.01
 
-make_plot(f)
+make_plot(user_func.ff1T)
 
 for i in range(3, 103):
     x0 = random.randint(-100, 100)
 
-    expansion_result = expansion_method(f, x0, d, alpha, nmax)
+    expansion_result = expansion_method(user_func.ff1T, x0, d, alpha, nmax)
     print("Przedział ekspansji: ", expansion_result)
     a, b, fcalls = expansion_result
 
-    fib_result = fibonacci_method(f, a, b, epsilon)
+    fib_result = fibonacci_method(user_func.ff1T, a, b, epsilon)
     print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
 
     add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], i)
 
 # Test metody Lagrange'a
 c = (a + b) / 2
-lagrange_result = lagrange_interpolation(f, a, b, c, epsilon)
+lagrange_result = lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
 print("Przybliżone minimum Lagrange'a: ", lagrange_result)
