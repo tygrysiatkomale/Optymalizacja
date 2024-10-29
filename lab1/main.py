@@ -14,8 +14,7 @@ class FCallsUnique:
         return self.func(x)
 
 
-def f(x):
-    return -np.cos(0.1 * x) * np.exp(-(0.1 * x - 2 * np.pi) ** 2) + 0.002 * (0.1 * x) ** 2
+
 
 
 def make_plot(f, range_start=-100, range_stop=100):
