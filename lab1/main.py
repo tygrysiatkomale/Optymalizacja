@@ -14,9 +14,6 @@ class FCallsUnique:
         return self.func(x)
 
 
-
-
-
 def make_plot(f, range_start=-100, range_stop=100):
     x = []
     y = []
