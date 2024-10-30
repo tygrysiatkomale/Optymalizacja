@@ -78,13 +78,14 @@ def fibonacci_method(f, a, b, epsilon):
 
 
 # metoda lagrange (z poprawkami stabilności)
-def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
+def lagrange_interpolation(f, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
+    f = FCallsUnique(f)
     i = 0
     min_m_threshold = 1e-10  # Minimalna wartość graniczna dla mianownika, aby uniknąć dzielenia przez małe wartości
 
     while i < max_iter:
-        l = (func(a) * (b ** 2 - c ** 2) + func(b) * (c ** 2 - a ** 2) + func(c) * (a ** 2 - b ** 2))
-        m = (func(a) * (b - c) + func(b) * (c - a) + func(c) * (a - b))
+        l = (f(a) * (b ** 2 - c ** 2) + f(b) * (c ** 2 - a ** 2) + f(c) * (a ** 2 - b ** 2))
+        m = (f(a) * (b - c) + f(b) * (c - a) + f(c) * (a - b))
 
         if abs(m) < min_m_threshold:
             raise ValueError("Błąd: wartość mianownika m jest zbyt bliska zeru, co prowadzi do niestabilności w metodzie Lagrange’a.")
@@ -96,13 +97,13 @@ def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100
             raise ValueError("Błąd: punkt interpolacji d jest poza zakresem przedziału.")
 
         if a < d < c:
-            if func(d) < func(c):
+            if f(d) < f(c):
                 b = c
                 c = d
             else:
                 a = d
         elif c < d < b:
-            if func(d) < func(c):
+            if f(d) < f(c):
                 a = c
                 c = d
             else:
@@ -112,7 +113,7 @@ def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100
 
         # Sprawdzenie kryterium zbieżności
         if abs(b - a) < epsilon or abs(d - c) < gamma:
-            return d
+            return d, f.calls
 
         i += 1
 
