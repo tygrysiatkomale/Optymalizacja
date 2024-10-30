@@ -84,18 +84,20 @@ print(f" Maksymalna temperatura w zbiorniku B dla DA = 50 cm^2: {max_TB:.2f}°C"
 
 x1 = 0.005
 d1 = 0.002
+a1 = 1/10000
+b1 = 100/10000
 # Metoda ekspansji - wstępne oszacowanie przedziału poszukiwań
 a, b, fcalls_expansion = algorithms.expansion_method(lambda DA: user_func.ff2R(DA)[0], x1, d1, alpha)
 print(f"Przedział po ekspansji: a = {a:.5f}, b = {b:.5f}, liczba wywołań funkcji celu: {fcalls_expansion}")
 
 # Metoda Fibonacciego - optymalizacja w przedziale [a, b]
-DA_fib, fcalls_fib = algorithms.fibonacci_method(lambda DA: user_func.ff2R(DA)[0], a, b, epsilon)
+DA_fib, fcalls_fib = algorithms.fibonacci_method(lambda DA: user_func.ff2R(DA)[0], a1, b1, epsilon)
 print(f"Optymalna wartość DA (metoda Fibonacciego): {DA_fib * 10000:.2f} cm^2, liczba wywołań funkcji celu: {fcalls_fib}")
 
 # Metoda interpolacji Lagrange'a - optymalizacja w przedziale [a, b]
 c = (a + b) / 2  # Punkt wewnętrzny dla metody Lagrange'a
 try:
-    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a, b, c, epsilon)
+    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a1, b1, c, epsilon)
     print(f"Optymalna wartość DA (interpolacja Lagrange'a): {DA_lagrange * 10000:.2f} cm^2, liczba wywołań funkcji celu: {fcalls_lagrange}")
 except ValueError as e:
     print(f"Wystąpił błąd podczas optymalizacji metodą Lagrange'a: {e}")
