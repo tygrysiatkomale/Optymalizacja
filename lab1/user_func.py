@@ -22,7 +22,7 @@ def ff2R(DA, T_target=50):
     Y0 = [5, 1, 20]  # początkowe wartości VA, VB, TB
 
     # Rozwiązywanie równań różniczkowych w przedziale czasu [0, 2000]
-    sol = solve_ivp(df1, [0, 2000], Y0, args=(DA,), dense_output=True)
+    sol = solve_ivp(df1, [0, 2000], Y0, args=(DA,), dense_output=True, method='LSODA')
 
     # Wyodrębnienie rozwiązania dla temperatury TB
     TB_values = sol.y[2]  # Trzecia wartość w wektorze Y to TB
@@ -31,7 +31,8 @@ def ff2R(DA, T_target=50):
     max_TB = np.max(TB_values)
 
     # Funkcja celu: różnica między maksymalną temperaturą a wartością docelową
-    return abs(max_TB - T_target)
+    # return abs(max_TB - T_target)
+    return abs(max_TB - T_target), max_TB, sol
 
 
 
