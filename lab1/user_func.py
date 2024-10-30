@@ -69,6 +69,10 @@ def df1(t, Y, DA):
     FAout = a * b * DA * np.sqrt(2 * g * VA / PA) if VA > 0 else 0
     FBout = a * b * DB * np.sqrt(2 * g * VB / PB) if VB > 0 else 0
 
+    # Upewnijmy się, że FAout nie jest ujemny
+    if FAout < 0:
+        FAout = 0
+
     # Obliczenie pochodnych
     dVA_dt = -FAout                                  # VA' (zmiana objętości w A)
     dVB_dt = FAout + Fin - FBout                     # VB' (zmiana objętości w B)
