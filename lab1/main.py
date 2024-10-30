@@ -95,8 +95,8 @@ print(f"Optymalna wartość DA (metoda Fibonacciego): {DA_fib * 10000:.2f} cm^2,
 # Metoda interpolacji Lagrange'a - optymalizacja w przedziale [a, b]
 c = (a + b) / 2  # Punkt wewnętrzny dla metody Lagrange'a
 try:
-    DA_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a, b, c, epsilon)
-    print(f"Optymalna wartość DA (interpolacja Lagrange'a): {DA_lagrange * 10000:.2f} cm^2")
+    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a, b, c, epsilon)
+    print(f"Optymalna wartość DA (interpolacja Lagrange'a): {DA_lagrange * 10000:.2f} cm^2, liczba wywołań funkcji celu: {fcalls_lagrange}")
 except ValueError as e:
     print(f"Wystąpił błąd podczas optymalizacji metodą Lagrange'a: {e}")
     DA_lagrange = None
@@ -104,4 +104,8 @@ except ValueError as e:
 # Wywołanie funkcji celu dla uzyskanego wyniku Fibonacciego, aby zweryfikować temperaturę
 _, max_TB_fib, sol_fib = user_func.ff2R(DA_fib)
 print(f"Maksymalna temperatura w zbiorniku B dla DA (Fibonacci) = {DA_fib * 10000:.2f} cm^2: {max_TB_fib:.2f}°C")
+
+# wywołanie funkcji celu dla uzyskanego wyniku lagrange, aby zweryfikowac temperature
+_, max_TB_lag, sol_lag = user_func.ff2R(DA_lagrange)
+print(f"Maksymalna temperatura w zbiorniku B dla DA (Lagrange) = {DA_lagrange * 10000:.2f} cm^2: {max_TB_lag:.2f}°C")
 
