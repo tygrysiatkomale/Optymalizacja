@@ -1,4 +1,6 @@
 # plik z algorytmami - ekspansja, lagrange, fibonacci
+import numpy as np
+
 
 class FCallsUnique:
     def __init__(self, func):
@@ -74,17 +76,24 @@ def fibonacci_method(f, a, b, epsilon):
 
     return (c_i + d_i) / 2, f.calls
 
-# metoda lagrange (bez fcalls)
+
+# metoda lagrange (z poprawkami stabilności)
 def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
     i = 0
+    min_m_threshold = 1e-10  # Minimalna wartość graniczna dla mianownika, aby uniknąć dzielenia przez małe wartości
+
     while i < max_iter:
         l = (func(a) * (b ** 2 - c ** 2) + func(b) * (c ** 2 - a ** 2) + func(c) * (a ** 2 - b ** 2))
         m = (func(a) * (b - c) + func(b) * (c - a) + func(c) * (a - b))
 
-        if m <= 0:
-            raise ValueError("Błąd: podział przez zero lub ujemna wartość w metodzie Lagrange’a.")
+        if abs(m) < min_m_threshold:
+            raise ValueError("Błąd: wartość mianownika m jest zbyt bliska zeru, co prowadzi do niestabilności w metodzie Lagrange’a.")
 
         d = 0.5 * l / m
+
+        # Upewnij się, że d jest w odpowiednim przedziale [a, b]
+        if not (a < d < b):
+            raise ValueError("Błąd: punkt interpolacji d jest poza zakresem przedziału.")
 
         if a < d < c:
             if func(d) < func(c):
@@ -101,6 +110,7 @@ def lagrange_interpolation(func, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100
         else:
             raise ValueError("Błąd: punkt interpolacji d jest poza zakresem przedziału.")
 
+        # Sprawdzenie kryterium zbieżności
         if abs(b - a) < epsilon or abs(d - c) < gamma:
             return d
 
