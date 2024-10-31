@@ -13,7 +13,7 @@ def make_plot(f, range_start=-100, range_stop=100):
         x.append(i)
         y.append(f(i))
 
-    plt.plot(x, y, marker='o', linestyle='-', color='b', label='Wartości')
+    plt.plot(x, y, color='b', label='Wartości')
 
     plt.title('Wykres funkcji')
     plt.xlabel('Oś X')
@@ -28,13 +28,10 @@ def make_plot(f, range_start=-100, range_stop=100):
 def add_to_excel_simulation_results(DA, sol, method):
     file_name = "xlsx1.xlsx"
     try:
-        # Próba załadowania istniejącego pliku
         workbook = load_workbook(file_name)
     except FileNotFoundError:
-        # Jeśli plik nie istnieje, tworzymy nowy
         workbook = Workbook()
 
-    # Wybierz arkusz 'Symulacje', jeśli istnieje, w przeciwnym razie dodaj nowy
     if 'Symulacja' in workbook.sheetnames:
         sheet = workbook['Symulacja']
     else:
