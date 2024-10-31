@@ -77,7 +77,7 @@ def add_to_excel_simulation_results(DA, sol, method):
         print(f"t = {t:.2f}s, VA = {sol.y[0][i]:.5f} m^3, VB = {sol.y[1][i]:.5f} m^3, TB = {sol.y[2][i]:.2f} °C")
 
 
-def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
+def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, lagrange_ncalls, lagrange_min, line):
     file_name = "xlsx1.xlsx"
     try:
         # Próba załadowania istniejącego pliku
@@ -87,7 +87,7 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
         workbook = Workbook()
 
     # Wybieramy aktywny arkusz (pierwszy z dostępnych)
-    sheet = workbook.active
+    sheet = workbook["Tabela 1"]
 
     sheet[f'C{line}'] = x0
     sheet[f'D{line}'] = a
@@ -97,10 +97,14 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
     sheet[f'H{line}'] = user_func.ff1T(fib_min)
     sheet[f'I{line}'] = fib_ncalls
     sheet[f'J{line}'] = "lokalne" if user_func.ff1T(fib_min) > -0.1 else "globalne"
+    sheet[f'K{line}'] = lagrange_min
+    sheet[f'L{line}'] = user_func.ff1T(lagrange_min)
+    sheet[f'M{line}'] = lagrange_ncalls
+    sheet[f'N{line}'] = "lokalne" if user_func.ff1T(lagrange_min) > -0.1 else "globalne"
 
     # Zapisujemy zmiany w pliku
     workbook.save(file_name)
-    print(f"Wartości zostały zapisane do pliku {file_name} w linii {line}")
+    # print(f"Wartości zostały zapisane do pliku {file_name} w linii {line}")
 
 
 # Parametry i testy
@@ -120,12 +124,14 @@ for i in range(3, 103):
     a, b, fcalls = expansion_result
 
     fib_result = algorithms.fibonacci_method(user_func.ff1T, a, b, epsilon)
-    # print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
+    print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
 
     # add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], i)
-    # c = (a + b) / 2
-    # lagrange_result = algorithms.lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
-    # print("Przybliżone minimum Lagrange'a: ", lagrange_result)
+    c = (a + b) / 2
+    lagrange_result = algorithms.lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
+
+    add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], lagrange_result[1], lagrange_result[0], i)
+    print("Przybliżone minimum Lagrange'a: ", lagrange_result[0], "liczba wywolan", lagrange_result[1])
 
 # Symulacja dla Da = 50 cm^2
 DA_test = 0.005   # Da w cm^2

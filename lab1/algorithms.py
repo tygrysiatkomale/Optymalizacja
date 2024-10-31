@@ -78,44 +78,46 @@ def fibonacci_method(f, a, b, epsilon):
 
 
 # metoda lagrange (z poprawkami stabilności)
-def lagrange_interpolation(f, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
+def lagrange_interpolation(f, a, b, c, epsilon=1e-5, max_iter=1000):
     f = FCallsUnique(f)
     i = 0
-    min_m_threshold = 1e-10  # Minimalna wartość graniczna dla mianownika, aby uniknąć dzielenia przez małe wartości
 
-    while i < max_iter:
-        l = (f(a) * (b ** 2 - c ** 2) + f(b) * (c ** 2 - a ** 2) + f(c) * (a ** 2 - b ** 2))
-        m = (f(a) * (b - c) + f(b) * (c - a) + f(c) * (a - b))
+    for _ in range(max_iter):
+        # Sortuj punkty według ich wartości x
+        x = sorted([a, b, c])
+        x0, x1, x2 = x
+        f0, f1, f2 = f(x0), f(x1), f(x2)
 
-        if abs(m) < min_m_threshold:
-            raise ValueError("Błąd: wartość mianownika m jest zbyt bliska zeru, "
-                             "co prowadzi do niestabilności w metodzie Lagrange’a.")
+        # Obliczanie współczynników interpolacji kwadratowej
+        numerator = ( (x1 - x0)**2 * (f1 - f2) - (x1 - x2)**2 * (f1 - f0) )
+        denominator = ( (x1 - x0)*(f1 - f2) - (x1 - x2)*(f1 - f0) )
 
-        d = 0.5 * l / m
+        if denominator == 0:
+            raise ZeroDivisionError("Dzielenie przez zero w obliczaniu punktu interpolacji.")
 
-        # Upewnij się, że d jest w odpowiednim przedziale [a, b]
-        if not (a < d < b):
-            raise ValueError("Błąd: punkt interpolacji d jest poza zakresem przedziału.")
-
-        if a < d < c:
-            if f(d) < f(c):
-                b = c
-                c = d
-            else:
-                a = d
-        elif c < d < b:
-            if f(d) < f(c):
-                a = c
-                c = d
-            else:
-                b = d
-        else:
-            raise ValueError("Błąd: punkt interpolacji d jest poza zakresem przedziału.")
+        d = x1 - 0.5 * numerator / denominator
 
         # Sprawdzenie kryterium zbieżności
-        if abs(b - a) < epsilon or abs(d - c) < gamma:
+        if abs(d - x1) < epsilon:
             return d, f.calls
 
+        # Aktualizacja punktów
+        fd = f(d)
+        if fd < f1:
+            if d < x1:
+                x2 = x1
+                x1 = d
+            else:
+                x0 = x1
+                x1 = d
+        else:
+            if d < x1:
+                x0 = d
+            else:
+                x2 = d
+
+        a, b, c = x0, x1, x2
         i += 1
 
     raise RuntimeError("Przekroczono maksymalną liczbę iteracji bez zbieżności.")
+
