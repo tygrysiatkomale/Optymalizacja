@@ -112,8 +112,8 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
 x0 = random.randint(-100,100)
 d = 1
 alpha = 1.5
-nmax = 100
-epsilon = 0.001
+nmax = 10000
+epsilon = 0.00001
 
 make_plot(user_func.ff1T)
 
@@ -154,7 +154,7 @@ print(f"Optymalna wartość DA (metoda Fibonacciego): {DA_fib * 10000:.2f} cm^2,
 # Metoda interpolacji Lagrange'a - optymalizacja w przedziale [a1, b1]
 c = (a + b) / 2  # Punkt wewnętrzny dla metody Lagrange'a
 try:
-    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a1, b1, c, epsilon)
+    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a1, b1, c)
     print(f"Optymalna wartość DA (interpolacja Lagrange'a): {DA_lagrange * 10000:.2f} cm^2, liczba wywołań funkcji celu: {fcalls_lagrange}")
 except ValueError as e:
     print(f"Wystąpił błąd podczas optymalizacji metodą Lagrange'a: {e}")
