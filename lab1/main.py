@@ -113,23 +113,23 @@ epsilon = 0.00001
 
 make_plot(user_func.ff1T)
 
-for i in range(3, 103):
-    x0 = random.randint(-100, 100)
-
+for i in range(3, 303):
+    if 3 <= i <= 102:
+        alpha = 1.5
+    elif 103 <= i <= 202:
+        alpha = 2
+    elif 203 <= i <= 302:
+        alpha = 2.5
+    x0 = random.randint(-50, 100)
     expansion_result = algorithms.expansion_method(user_func.ff1T, x0, d, alpha, nmax)
-    # print("Przedział ekspansji: ", expansion_result)
     a, b, fcalls = expansion_result
-
     fib_result = algorithms.fibonacci_method(user_func.ff1T, a, b, epsilon)
-    # print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
-
-    # add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], i)
-    c = (a + b) / 2
+    # c = (a + b) / 2
+    c = fib_result[0]
     lagrange_result = algorithms.lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
-
     add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], lagrange_result[1], lagrange_result[0], i)
-    # print("Przybliżone minimum Lagrange'a: ", lagrange_result[0], "liczba wywolan", lagrange_result[1])
 
+alpha = 1.5
 # Symulacja dla Da = 50 cm^2
 DA_test = 0.005   # Da w cm^2
 difference, max_TB, sol = user_func.ff2R(DA_test)

@@ -25,7 +25,6 @@ def expansion_method(f, x_0, d, alfa, n_max=1000):
         x[1] = x[0] + d
         if f(x[1]) >= f(x[0]):
             return x[1], (x[0] - d), f.calls
-
     while True:
         if f.calls > n_max:
             raise ValueError("Error: Przekroczono N_MAX")
@@ -89,8 +88,8 @@ def lagrange_interpolation(f, a, b, c, epsilon=1e-5, max_iter=10000):
         f0, f1, f2 = f(x0), f(x1), f(x2)
 
         # Obliczanie współczynników interpolacji kwadratowej
-        numerator = ( (x1 - x0)**2 * (f1 - f2) - (x1 - x2)**2 * (f1 - f0) )
-        denominator = ( (x1 - x0)*(f1 - f2) - (x1 - x2)*(f1 - f0) )
+        numerator = ((x1 - x0)**2 * (f1 - f2) - (x1 - x2)**2 * (f1 - f0))
+        denominator = ((x1 - x0)*(f1 - f2) - (x1 - x2)*(f1 - f0))
 
         if denominator == 0:
             raise ZeroDivisionError("Dzielenie przez zero w obliczaniu punktu interpolacji.")
@@ -120,4 +119,3 @@ def lagrange_interpolation(f, a, b, c, epsilon=1e-5, max_iter=10000):
         i += 1
 
     raise RuntimeError("Przekroczono maksymalną liczbę iteracji bez zbieżności.")
-
