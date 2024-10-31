@@ -78,10 +78,10 @@ def fibonacci_method(f, a, b, epsilon):
 
 
 # metoda lagrange (z poprawkami stabilności)
-def lagrange_interpolation(f, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
+def lagrange_interpolation(f, a, b, c, epsilon=0.00001, gamma=0.00001, max_iter=10000):
     f = FCallsUnique(f)
     i = 0
-    min_m_threshold = 1e-10  # Minimalna wartość graniczna dla mianownika, aby uniknąć dzielenia przez małe wartości
+    min_m_threshold = 1e-14  # Minimalna wartość graniczna dla mianownika, aby uniknąć dzielenia przez małe wartości
 
     while i < max_iter:
         l = (f(a) * (b ** 2 - c ** 2) + f(b) * (c ** 2 - a ** 2) + f(c) * (a ** 2 - b ** 2))
