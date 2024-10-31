@@ -22,7 +22,7 @@ def metodaEkspansji(f, x_0, d, alfa, N_MAX=1000):
         i = i + 1
         x.append(x[0] + (alfa ** i) * d)
 
-        if f(x[i]) <= f(x[i+1]): ############
+        if f(x[i]) <= f(x[i+1]):
             break
 
     print(f"Liczba wywołań funkcji: {fCalls.calls}")

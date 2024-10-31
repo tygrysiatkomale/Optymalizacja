@@ -1,5 +1,3 @@
-# plik z algorytmami - ekspansja, lagrange, fibonacci
-import numpy as np
 
 
 class FCallsUnique:
@@ -10,6 +8,7 @@ class FCallsUnique:
     def __call__(self, x):
         self.calls += 1
         return self.func(x)
+
 
 # metoda ekspansji
 def expansion_method(f, x_0, d, alfa, n_max=1000):
@@ -40,6 +39,7 @@ def expansion_method(f, x_0, d, alfa, n_max=1000):
         return x[i - 1], x[i + 1], f.calls
 
     return x[i + 1], x[i - 1], f.calls
+
 
 # metoda fibonacciego
 def fibonacci(n):
@@ -88,7 +88,8 @@ def lagrange_interpolation(f, a, b, c, epsilon=1e-5, gamma=1e-5, max_iter=100):
         m = (f(a) * (b - c) + f(b) * (c - a) + f(c) * (a - b))
 
         if abs(m) < min_m_threshold:
-            raise ValueError("Błąd: wartość mianownika m jest zbyt bliska zeru, co prowadzi do niestabilności w metodzie Lagrange’a.")
+            raise ValueError("Błąd: wartość mianownika m jest zbyt bliska zeru, "
+                             "co prowadzi do niestabilności w metodzie Lagrange’a.")
 
         d = 0.5 * l / m
 
