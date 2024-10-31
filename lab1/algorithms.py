@@ -78,7 +78,7 @@ def fibonacci_method(f, a, b, epsilon):
 
 
 # metoda lagrange (z poprawkami stabilności)
-def lagrange_interpolation(f, a, b, c, epsilon=1e-5, max_iter=1000):
+def lagrange_interpolation(f, a, b, c, epsilon=1e-5, max_iter=10000):
     f = FCallsUnique(f)
     i = 0
 

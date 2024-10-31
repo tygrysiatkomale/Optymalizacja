@@ -108,7 +108,7 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, lagrange_ncalls, lagrange_min
 
 
 # Parametry i testy
-x0 = random.randint(-100, 100)
+x0 = random.randint(-50, 100)
 d = 1
 alpha = 1.5
 nmax = 10000
@@ -124,14 +124,14 @@ for i in range(3, 103):
     a, b, fcalls = expansion_result
 
     fib_result = algorithms.fibonacci_method(user_func.ff1T, a, b, epsilon)
-    print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
+    # print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
 
     # add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], i)
     c = (a + b) / 2
     lagrange_result = algorithms.lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
 
     add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], lagrange_result[1], lagrange_result[0], i)
-    print("Przybliżone minimum Lagrange'a: ", lagrange_result[0], "liczba wywolan", lagrange_result[1])
+    # print("Przybliżone minimum Lagrange'a: ", lagrange_result[0], "liczba wywolan", lagrange_result[1])
 
 # Symulacja dla Da = 50 cm^2
 DA_test = 0.005   # Da w cm^2
