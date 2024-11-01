@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from openpyxl import Workbook, load_workbook
 import random
 import user_func
@@ -43,9 +44,7 @@ def add_to_excel_simulation_results(DA, sol, method):
         'Lagrange': {'VA': 'C', 'VB': 'E', 'TB': 'G'}
     }
 
-    # Znajdź pierwszy wolny wiersz poniżej nagłówków (pomijamy połączone komórki, zaczynamy od trzeciego wiersza)
-    start_row = 3
-    row = sheet.max_row + 1 if sheet.max_row >= start_row else start_row
+    row = 3
 
     # Dodajemy dane symulacyjne zgodnie z istniejącymi nagłówkami
     for i, t in enumerate(sol.t):
@@ -164,19 +163,16 @@ except ValueError as e:
     print(f"Wystąpił błąd podczas optymalizacji metodą Lagrange'a: {e}")
     DA_lagrange = None
 
+
 # Wywołanie funkcji celu dla uzyskanego wyniku Fibonacciego, aby zweryfikować temperaturę
 _, max_TB_fib, sol_fib = user_func.ff2R(DA_fib)
 print(f"Maksymalna temperatura w zbiorniku B dla DA (Fibonacci) = {DA_fib * 10000:.2f} cm^2: {max_TB_fib:.2f}°C")
-add_to_excel_simulation_results(DA_fib, sol_fib, "Fibonacci")
+# add_to_excel_simulation_results(DA_fib, sol_fib, "Fibonacci")
 
 # wywołanie funkcji celu dla uzyskanego wyniku lagrange, aby zweryfikowac temperature
-if DA_lagrange is not None:
-    _, max_TB_lag, sol_lag = user_func.ff2R(DA_lagrange)
-    print(f"Maksymalna temperatura w zbiorniku B dla DA (Lagrange) = {DA_lagrange * 10000:.2f} cm^2: "
-          f"{max_TB_lag:.2f}°C")
-    add_to_excel_simulation_results(DA_lagrange, sol_lag, "Lagrange")
-
-print("\n\n", type(DA_lagrange), DA_lagrange, type(DA_fib), DA_fib, type(sol_fib), sol_fib, type(sol_lag), sol_lag, "\n\n")
+_, max_TB_lag, sol_lag = user_func.ff2R(DA_lagrange)
+print(f"Maksymalna temperatura w zbiorniku B dla DA (Lagrange) = {DA_lagrange * 10000:.2f} cm^2: "f"{max_TB_lag:.2f}°C")
+# add_to_excel_simulation_results(DA_lagrange, sol_lag, "Lagrange")
 
 
 # Wizualizacja wyników symulacji
