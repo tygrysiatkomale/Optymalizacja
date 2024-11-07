@@ -2,9 +2,11 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 
+
 # funkcja testowa
 def ff1T(x):
     return -np.cos(0.1 * x) * np.exp(-(0.1 * x - 2 * np.pi) ** 2) + 0.002 * (0.1 * x) ** 2
+
 
 # funkcja celu
 def ff2R(DA, T_target=50):
@@ -33,7 +35,6 @@ def ff2R(DA, T_target=50):
     # Funkcja celu: różnica między maksymalną temperaturą a wartością docelową
     # return abs(max_TB - T_target)
     return abs(max_TB - T_target), max_TB, sol
-
 
 
 # funkcja opisujaca rownanie rozniczkowe

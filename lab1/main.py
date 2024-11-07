@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from openpyxl import Workbook, load_workbook
 import random
 import user_func
@@ -14,7 +14,7 @@ def make_plot(f, range_start=-100, range_stop=100):
         x.append(i)
         y.append(f(i))
 
-    plt.plot(x, y, marker='o', linestyle='-', color='b', label='Wartości')
+    plt.plot(x, y, color='b', label='Wartości')
 
     plt.title('Wykres funkcji')
     plt.xlabel('Oś X')
@@ -29,13 +29,10 @@ def make_plot(f, range_start=-100, range_stop=100):
 def add_to_excel_simulation_results(DA, sol, method):
     file_name = "xlsx1.xlsx"
     try:
-        # Próba załadowania istniejącego pliku
         workbook = load_workbook(file_name)
     except FileNotFoundError:
-        # Jeśli plik nie istnieje, tworzymy nowy
         workbook = Workbook()
 
-    # Wybierz arkusz 'Symulacje', jeśli istnieje, w przeciwnym razie dodaj nowy
     if 'Symulacja' in workbook.sheetnames:
         sheet = workbook['Symulacja']
     else:
@@ -47,9 +44,7 @@ def add_to_excel_simulation_results(DA, sol, method):
         'Lagrange': {'VA': 'C', 'VB': 'E', 'TB': 'G'}
     }
 
-    # Znajdź pierwszy wolny wiersz poniżej nagłówków (pomijamy połączone komórki, zaczynamy od trzeciego wiersza)
-    start_row = 3
-    row = sheet.max_row + 1 if sheet.max_row >= start_row else start_row
+    row = 3
 
     # Dodajemy dane symulacyjne zgodnie z istniejącymi nagłówkami
     for i, t in enumerate(sol.t):
@@ -78,9 +73,7 @@ def add_to_excel_simulation_results(DA, sol, method):
         print(f"t = {t:.2f}s, VA = {sol.y[0][i]:.5f} m^3, VB = {sol.y[1][i]:.5f} m^3, TB = {sol.y[2][i]:.2f} °C")
 
 
-
-
-def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
+def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, lagrange_ncalls, lagrange_min, line):
     file_name = "xlsx1.xlsx"
     try:
         # Próba załadowania istniejącego pliku
@@ -90,7 +83,7 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
         workbook = Workbook()
 
     # Wybieramy aktywny arkusz (pierwszy z dostępnych)
-    sheet = workbook.active
+    sheet = workbook["Tabela 1"]
 
     sheet[f'C{line}'] = x0
     sheet[f'D{line}'] = a
@@ -100,16 +93,18 @@ def add_to_excel(x0, a, b, n, fib_ncalls, fib_min, line):
     sheet[f'H{line}'] = user_func.ff1T(fib_min)
     sheet[f'I{line}'] = fib_ncalls
     sheet[f'J{line}'] = "lokalne" if user_func.ff1T(fib_min) > -0.1 else "globalne"
+    sheet[f'K{line}'] = lagrange_min
+    sheet[f'L{line}'] = user_func.ff1T(lagrange_min)
+    sheet[f'M{line}'] = lagrange_ncalls
+    sheet[f'N{line}'] = "lokalne" if user_func.ff1T(lagrange_min) > -0.1 else "globalne"
 
     # Zapisujemy zmiany w pliku
     workbook.save(file_name)
-    print(f"Wartości zostały zapisane do pliku {file_name} w linii {line}")
-
-
+    # print(f"Wartości zostały zapisane do pliku {file_name} w linii {line}")
 
 
 # Parametry i testy
-x0 = random.randint(-100,100)
+x0 = random.randint(-50, 100)
 d = 1
 alpha = 1.5
 nmax = 10000
@@ -117,20 +112,25 @@ epsilon = 0.00001
 
 make_plot(user_func.ff1T)
 
-for i in range(3, 103):
-    x0 = random.randint(-100, 100)
 
-    expansion_result = algorithms.expansion_method(user_func.ff1T, x0, d, alpha, nmax)
-    #print("Przedział ekspansji: ", expansion_result)
-    a, b, fcalls = expansion_result
+# Dodawanie do excela, trwa to z 2 minuty
+# for i in range(3, 303):
+#     if 3 <= i <= 102:
+#         alpha = 1.5
+#     elif 103 <= i <= 202:
+#         alpha = 2
+#     elif 203 <= i <= 302:
+#         alpha = 2.5
+#     x0 = random.randint(-50, 100)
+#     expansion_result = algorithms.expansion_method(user_func.ff1T, x0, d, alpha, nmax)
+#     a, b, fcalls = expansion_result
+#     fib_result = algorithms.fibonacci_method(user_func.ff1T, a, b, epsilon)
+#     # c = (a + b) / 2
+#     c = fib_result[0]
+#     lagrange_result = algorithms.lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
+#     add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], lagrange_result[1], lagrange_result[0], i)
+# alpha = 1.5
 
-    fib_result = algorithms.fibonacci_method(user_func.ff1T, a, b, epsilon)
-    #print("Przybliżone minimum Fibonacciego: ", fib_result[0], "liczba wywolan:", fib_result[1])
-
-    #add_to_excel(x0, a, b, fcalls, fib_result[1], fib_result[0], i)
-    # c = (a + b) / 2
-    # lagrange_result = algorithms.lagrange_interpolation(user_func.ff1T, a, b, c, epsilon)
-    #print("Przybliżone minimum Lagrange'a: ", lagrange_result)
 
 # Symulacja dla Da = 50 cm^2
 DA_test = 0.005   # Da w cm^2
@@ -149,27 +149,30 @@ print(f"Przedział po ekspansji: a = {a:.5f}, b = {b:.5f}, liczba wywołań funk
 
 # Metoda Fibonacciego - optymalizacja w przedziale [a1, b1]
 DA_fib, fcalls_fib = algorithms.fibonacci_method(lambda DA: user_func.ff2R(DA)[0], a1, b1, epsilon)
-print(f"Optymalna wartość DA (metoda Fibonacciego): {DA_fib * 10000:.2f} cm^2, liczba wywołań funkcji celu: {fcalls_fib}")
+print(f"Optymalna wartość DA (metoda Fibonacciego): {DA_fib * 10000:.2f} cm^2, "
+      f"liczba wywołań funkcji celu: {fcalls_fib}")
 
 # Metoda interpolacji Lagrange'a - optymalizacja w przedziale [a1, b1]
 c = (a + b) / 2  # Punkt wewnętrzny dla metody Lagrange'a
 try:
-    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0], a1, b1, c)
-    print(f"Optymalna wartość DA (interpolacja Lagrange'a): {DA_lagrange * 10000:.2f} cm^2, liczba wywołań funkcji celu: {fcalls_lagrange}")
+    DA_lagrange, fcalls_lagrange = algorithms.lagrange_interpolation(lambda DA: user_func.ff2R(DA)[0],
+                                                                     a1, b1, c, epsilon)
+    print(f"Optymalna wartość DA (interpolacja Lagrange'a): {DA_lagrange * 10000:.2f} cm^2, "
+          f"liczba wywołań funkcji celu: {fcalls_lagrange}")
 except ValueError as e:
     print(f"Wystąpił błąd podczas optymalizacji metodą Lagrange'a: {e}")
     DA_lagrange = None
 
+
 # Wywołanie funkcji celu dla uzyskanego wyniku Fibonacciego, aby zweryfikować temperaturę
 _, max_TB_fib, sol_fib = user_func.ff2R(DA_fib)
 print(f"Maksymalna temperatura w zbiorniku B dla DA (Fibonacci) = {DA_fib * 10000:.2f} cm^2: {max_TB_fib:.2f}°C")
-add_to_excel_simulation_results(DA_fib, sol_fib, "Fibonacci")
+# add_to_excel_simulation_results(DA_fib, sol_fib, "Fibonacci")
 
 # wywołanie funkcji celu dla uzyskanego wyniku lagrange, aby zweryfikowac temperature
-if DA_lagrange is not None:
-    _, max_TB_lag, sol_lag = user_func.ff2R(DA_lagrange)
-    print(f"Maksymalna temperatura w zbiorniku B dla DA (Lagrange) = {DA_lagrange * 10000:.2f} cm^2: {max_TB_lag:.2f}°C")
-    add_to_excel_simulation_results(DA_lagrange, sol_lag, "Lagrange")
+_, max_TB_lag, sol_lag = user_func.ff2R(DA_lagrange)
+print(f"Maksymalna temperatura w zbiorniku B dla DA (Lagrange) = {DA_lagrange * 10000:.2f} cm^2: "f"{max_TB_lag:.2f}°C")
+# add_to_excel_simulation_results(DA_lagrange, sol_lag, "Lagrange")
 
 
 # Wizualizacja wyników symulacji
