@@ -148,13 +148,14 @@ Q_rosen = funkcja_celu(wynik_rosen)
 
 # Wyświetlenie wyników
 print("=== Wyniki optymalizacji dla problemu rzeczywistego ===")
-print("Dla długości kroku:", krok_startowy)
 print("--- Metoda Hooke-Jeevesa ---")
+print("Dla długości kroku:", krok_startowy)
 print(f"k1* = {wynik_hooke[0]}, k2* = {wynik_hooke[1]}")
 print(f"Q* = {Q_hooke}")
 print(f"Liczba wywołań funkcji celu: {liczba_wywolan_hooke}")
 
 print("--- Metoda Rosenbrocka ---")
+print("Dla długości kroku:", kroki_startowe)
 print(f"k1* = {wynik_rosen[0]}, k2* = {wynik_rosen[1]}")
 print(f"Q* = {Q_rosen}")
 print(f"Liczba wywołań funkcji celu: {liczba_wywolan_rosen}")
