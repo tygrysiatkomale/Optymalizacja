@@ -25,7 +25,7 @@ def hooke_jeeves(funkcja, punkt_startowy, krok_startowy, alfa, epsilon, maks_wyw
                 x = x - krok * np.eye(len(x))[j]
         return x
 
-    xB = np.array(punkt_startowy)
+    xB = np.array(punkt_startowy) # punktem startowym jest wartosc x
     s = krok_startowy
     liczba_wywolan = 0
 
@@ -40,6 +40,6 @@ def hooke_jeeves(funkcja, punkt_startowy, krok_startowy, alfa, epsilon, maks_wyw
                     break
         else:
             s *= alfa
-            liczba_wywolan += 1
+            liczba_wywolan += 1         # liczba wywolan czyli fcalls
 
     return xB
