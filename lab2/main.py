@@ -1,15 +1,9 @@
 import numpy as np
-import pandas as pd
-from scipy.integrate import simps  # Do całkowania numerycznego
+from scipy.integrate import simps
 from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
 
-# # funkcja sluzaca do sprawdzania poprawnosci dzialania metod, znamy jej minima
-# def funkcja_t(x):
-#     x1, x2 = x
-#     return (x1 + 3) ** 2 + (x2 -2) ** 2
 
-# Funkcja testowa
 def funkcja_testowa(x):
     """
     f(x1, x2) = x1^2 + x2^2 - cos(2.5 * pi * x1) - cos(2.5 * pi * x2) + 2
@@ -18,7 +12,6 @@ def funkcja_testowa(x):
     return x1 ** 2 + x2 ** 2 - np.cos(2.5 * np.pi * x1) - np.cos(2.5 * np.pi * x2) + 2
 
 
-# Funkcja kosztu dla ramienia robota
 def funkcja_celu(k, return_full=False):
     """
     Funkcja kosztu dla optymalizacji współczynników k1 i k2.
