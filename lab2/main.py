@@ -111,3 +111,23 @@ print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
 print(f"Znaleziony punkt optymalny: x1* = {wynik_rosenbrock[0]:}, x2* = {wynik_rosenbrock[1]:}")
 print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
 print(f"Wartość funkcji celu w punkcie (y*): {y_rosenbrock:}")
+
+'''
+Tabela 2
+ Trzeba wpisac długości kroku, dla których byla optymalizacja, 
+ i jesli dobrze rozumiem to zliczyc(?) ile bylo minimow globalnych
+ i dla nich obliczyc wartosci srednie dla x1*, x2*, y* i liczby wywolan f.celu
+ jeszcze nie wiem jak, ale mozna zrobic jakas funkcje ktora oblicza te wartosci srednie dla minimow globalnych
+ i wpisac recznie tw wyniki
+'''
+'''
+Wykres
+na razie myśle jak sie najlatwiej dostac do tego zeby latwo to wrzucic do excela
+do tego, czyli nr iteracji i jakie wychodza wartosci x1* i x2* dla dwoch metod
+jakis zaczatek tego jest wewnatrz metody rosenbrocka, ale cos sie wywala XD
+'''
+'''
+Tabela 3
+zwiazana jest juz z problemem rzeczywistym, mozna wpisac recznie,
+ wszystko co potrzebne bedzie wyprintowane
+'''
