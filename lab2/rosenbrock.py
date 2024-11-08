@@ -3,6 +3,7 @@ import numpy as np
 # globalna lista na wyniki operacji
 wyniki_iteracji = []
 
+
 def rosenbrock(funkcja, punkt_startowy, kroki_startowe, alfa, beta, epsilon, maks_wywolan):
     """
     Algorytm optymalizacji Rosenbrocka.
@@ -64,9 +65,9 @@ def rosenbrock(funkcja, punkt_startowy, kroki_startowe, alfa, beta, epsilon, mak
             lamda = np.zeros(n)
             p = np.zeros(n)
 
-        i += 1  # Inkrementacja liczby iteracji
+        # i += 1  # Inkrementacja liczby iteracji
 
     # Zapisujemy wynik końcowy
     # wyniki_iteracji.append((i, *xB))
 
-    return xB
+    return xB, liczba_wywolan
