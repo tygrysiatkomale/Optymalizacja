@@ -19,7 +19,7 @@ def funkcja_testowa(x):
 
 
 # Funkcja kosztu dla ramienia robota
-def funkcja_celu(k):
+def funkcja_celu(k, return_full=False):
     """
     Funkcja kosztu dla optymalizacji współczynników k1 i k2.
     Parametry:
@@ -47,6 +47,8 @@ def funkcja_celu(k):
     integrand = 10 * (alpha_desired - alpha) ** 2 + (omega_desired - omega) ** 2 + M ** 2
     Q = simps(integrand, czas)  # całkowanie numeryczne
 
+    if return_full:
+        return czas, alpha, omega
     return Q
 
 
@@ -96,22 +98,23 @@ wartość kroków startowych może wynosić [0.2, 0.2], [0.3, 0.3] (nie pomylic 
 wynik_hooke_jeeves, liczba_wywolan = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
 y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
 
-print("== Wyniki optymalizacji metodą Hooke-Jeevesa ==")
+print("Optymalizacja dla testowej funkcji:")
+print("Wyniki optymalizacji metodą Hooke-Jeevesa: ")
 print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
 print(f"Znaleziony punkt optymalny: x1* = {wynik_hooke_jeeves[0]} i x2* = {wynik_hooke_jeeves[1]}")
 print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
 print(f"Wartość funkcji celu w punkcie (y*): {y_hooke_jeeves}")
-print("")
 
 wynik_rosenbrock, liczba_wywolan = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan)
 y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
 
-print("== Wyniki optymalizacji metodą Rosenbrocka ==")
+print("Wyniki optymalizacji metodą Rosenbrocka: ")
 print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
 print(f"Znaleziony punkt optymalny: x1* = {wynik_rosenbrock[0]:}, x2* = {wynik_rosenbrock[1]:}")
 print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
 print(f"Wartość funkcji celu w punkcie (y*): {y_rosenbrock:}")
 print("")
+
 '''
 Tabela 2
  Trzeba wpisac długości kroku, dla których byla optymalizacja, 
@@ -134,28 +137,52 @@ zwiazana jest juz z problemem rzeczywistym, mozna wpisac recznie,
  wszystko co potrzebne bedzie wyprintowane
  (wyniki do konsultacji)
 '''
-# Optymalizacja metodą Hooke-Jeevesa
+# Optymalizacja metodą Hooke-Jeevesa i Rosenbrocka, flagi na Flase, zeby zwrocilo tylko wartosc Q
 wynik_hooke, liczba_wywolan_hooke = hooke_jeeves(
     funkcja_celu, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan
 )
-Q_hooke = funkcja_celu(wynik_hooke)
+Q_hooke = funkcja_celu(wynik_hooke, return_full=False)
 
-# Optymalizacja metodą Rosenbrocka
 wynik_rosen, liczba_wywolan_rosen = rosenbrock(
     funkcja_celu, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan
 )
-Q_rosen = funkcja_celu(wynik_rosen)
+Q_rosen = funkcja_celu(wynik_rosen, return_full=False)
 
 # Wyświetlenie wyników
-print("=== Wyniki optymalizacji dla problemu rzeczywistego ===")
-print("--- Metoda Hooke-Jeevesa ---")
+print("Wyniki optymalizacji dla problemu rzeczywistego:   ")
+print("Metoda Hooke-Jeevesa: ")
 print("Dla długości kroku:", krok_startowy)
 print(f"k1* = {wynik_hooke[0]}, k2* = {wynik_hooke[1]}")
 print(f"Q* = {Q_hooke}")
 print(f"Liczba wywołań funkcji celu: {liczba_wywolan_hooke}")
 
-print("--- Metoda Rosenbrocka ---")
+print("Metoda Rosenbrocka: ")
 print("Dla długości kroku:", kroki_startowe)
 print(f"k1* = {wynik_rosen[0]}, k2* = {wynik_rosen[1]}")
 print(f"Q* = {Q_rosen}")
 print(f"Liczba wywołań funkcji celu: {liczba_wywolan_rosen}")
+print("")
+'''
+Symulacje
+Dla znalezionych parametrow obiema metodami przeprowadzamy symulację,
+jak cos to w funkcji celu zwracam Q, albo czas, alpha i omega,
+w zaleznosci od flagi -> dodane po to, zeby nie rozdzielac juz tej funkcji celu na dwie funkcje i zeby nie generowalo bledu
+(przy zwracaniu returnem wszystkich wartosci, wywalalo sie w metodzie hooke_jeeves, mimo kombinowania,
+ najlepszym rozwiazaniem jest flaga)
+ wszystko to co wypisuje nizej ma byc wpisywane w arkuszu excela
+ printuje to dla sprawdzenia wynikow i konsultacji
+'''
+
+czas_HJ, alpha_HJ, omega_HJ = funkcja_celu(wynik_hooke, return_full=True)
+czas_rosen, alpha_rosen, omega_rosen = funkcja_celu(wynik_rosen, return_full=True)
+print("Wyniki symulacji dla metody Hooke-Jeevesa:  ")
+print("Czas (t), Kąt (α), Prędkość kątowa (ω)")
+for t, a, w in zip(czas_HJ[:100], alpha_HJ[:100], omega_HJ[:100]):  # Ograniczenie do 100 próbek
+    print(f"{t:.2f}, {a:.6f}, {w:.6f}")
+
+print("")
+
+print("Wyniki symulacji dla metody Rosenbrocka: ")
+print("Czas (t), Kąt (α), Prędkość kątowa (ω)")
+for t, a, w in zip(czas_rosen[:100], alpha_rosen[:100], omega_rosen[:100]):  # Ograniczenie do 100 próbek
+    print(f"{t:.2f}, {a:.6f}, {w:.6f}")
