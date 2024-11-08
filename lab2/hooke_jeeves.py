@@ -42,4 +42,4 @@ def hooke_jeeves(funkcja, punkt_startowy, krok_startowy, alfa, epsilon, maks_wyw
             s *= alfa
             liczba_wywolan += 1         # liczba wywolan czyli fcalls
 
-    return xB
+    return xB, liczba_wywolan
