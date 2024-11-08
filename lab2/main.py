@@ -9,7 +9,6 @@ def funkcja_t(x):
     x1, x2 = x
     return (x1 + 3) ** 2 + (x2 -2) ** 2
 
-
 # Funkcja testowa
 def funkcja_testowa(x):
     """
@@ -62,13 +61,17 @@ omega_desired = 0.0  # żądana prędkość kątowa
 
 
 # Parametry optymalizacji
-punkt_startowy = [0.5, 0.5]
-krok_startowy = 0.1
+# punkt_startowy = [0.5, 0.5]
+krok_startowy = 0.1     # dla hooke_jeeves jest ta zmienna
 alfa_hooke = 0.5
 alfa_rosen = 1.5
 epsilon = 1e-6
 maks_wywolan = 1000
+kroki_startowe = [0.1, 0.1]      # dla rosenbrocka jest ta zmienna
+beta = 0.5
 
+# Losowanie punktu początkowego z przedziału [-1, 1]
+punkt_startowy = np.random.uniform(-1, 1, size=2)
 # w hooke alfa mniejsza od 1
 # w rosenbrock alfa wieksza od 1
 
@@ -81,10 +84,40 @@ maks_wywolan = 1000
 # wynik_rosenbrock = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, 0.5, epsilon, maks_wywolan)
 # print("Optymalny punkt (Rosenbrock):", wynik_rosenbrock)
 
-wynik_hooke_jeeves = hooke_jeeves(funkcja_t, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
-print("Optymalny punkt (Hooke-Jeeves):", wynik_hooke_jeeves)
 
-# Optymalizacja metodą Rosenbrocka
-kroki_startowe = [0.1, 0.1]
-wynik_rosenbrock = rosenbrock(funkcja_t, punkt_startowy, kroki_startowe, alfa_rosen, 0.5, epsilon, maks_wywolan)
-print("Optymalny punkt (Rosenbrock):", wynik_rosenbrock)
+'''
+To co znajduje się poniżej  ma się znaleźć w excelu w Tabeli 1,
+Wykonujemy 100 optymalizacji (na razie nie ma pętli, żeby weryfikować wyniki)
+ dla 3 roznych dlugosci kroku i startujemy z losowego punktu.
+Wyświetlam nasze wylosowane punkty startowe (kolumna C i D w tabeli)
+Wartosc kroku startowego wynosi 0.1, można też dać dla wynoszacego 0.2, 0.3 (skonsultuje z kimś)
+~wywołanie algorytmu Hooke-Jeevesa~
+wynik_hooke_jeeves -> zwraca nam tablicę z dwoma elementami (x1,x2), które (jak dobrze rozumiem) są minimami XD
+liczba_wywolan -> liczba wywołań funkcji celu,
+y_hooke_jeeves -> to wartość funkcji celu w znalezionym punkcie (czat mi zasugerowal, ze to jest wlasnie tym y* w tabeli,
+   ale zostawiam to do konsultacji z innymi)
+zostaje jeszcze określenie czy TAK/NIE minimum globalne, ale mi sie coś sypnelo, wiec na razie nie ma
+~ analogicznie jest dla wywołania algorytmu Rosenbrocka ~
+różnica:
+wartość kroków startowych może wynosić [0.2, 0.2], [0.3, 0.3] (nie pomylic ze tu jest tablica z dwoma wartosciami)
+
+'''
+
+wynik_hooke_jeeves, liczba_wywolan = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
+y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
+
+print("== Wyniki optymalizacji metodą Hooke-Jeevesa ==")
+print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
+print(f"Znaleziony punkt optymalny: x1* = {wynik_hooke_jeeves[0]} i x2* = {wynik_hooke_jeeves[1]}")
+print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
+print(f"Wartość funkcji celu w punkcie (y*): {y_hooke_jeeves}")
+print("")
+
+wynik_rosenbrock, liczba_wywolan = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan)
+y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
+
+print("== Wyniki optymalizacji metodą Rosenbrocka ==")
+print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
+print(f"Znaleziony punkt optymalny: x1* = {wynik_rosenbrock[0]:}, x2* = {wynik_rosenbrock[1]:}")
+print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
+print(f"Wartość funkcji celu w punkcie (y*): {y_rosenbrock:}")
