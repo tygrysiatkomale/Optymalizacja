@@ -1,7 +1,13 @@
 import numpy as np
+import pandas as pd
 from scipy.integrate import simps  # Do całkowania numerycznego
-from rosenbrock import rosenbrock
+from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
+
+
+def funkcja_t(x):
+    x1, x2 = x
+    return (x1 + 3) ** 2 + (x2 -2) ** 2
 
 
 # Funkcja testowa
@@ -58,15 +64,27 @@ omega_desired = 0.0  # żądana prędkość kątowa
 # Parametry optymalizacji
 punkt_startowy = [0.5, 0.5]
 krok_startowy = 0.1
-alfa = 0.5
+alfa_hooke = 0.5
+alfa_rosen = 1.5
 epsilon = 1e-6
 maks_wywolan = 1000
 
-# Optymalizacja metodą Hooke-Jeevesa
-wynik_hooke_jeeves = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa, epsilon, maks_wywolan)
+# w hooke alfa mniejsza od 1
+# w rosenbrock alfa wieksza od 1
+
+# # Optymalizacja metodą Hooke-Jeevesa
+# wynik_hooke_jeeves = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
+# print("Optymalny punkt (Hooke-Jeeves):", wynik_hooke_jeeves)
+#
+# # Optymalizacja metodą Rosenbrocka
+# kroki_startowe = [0.1, 0.1]
+# wynik_rosenbrock = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, 0.5, epsilon, maks_wywolan)
+# print("Optymalny punkt (Rosenbrock):", wynik_rosenbrock)
+
+wynik_hooke_jeeves = hooke_jeeves(funkcja_t, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
 print("Optymalny punkt (Hooke-Jeeves):", wynik_hooke_jeeves)
 
 # Optymalizacja metodą Rosenbrocka
 kroki_startowe = [0.1, 0.1]
-wynik_rosenbrock = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa, 0.5, epsilon, maks_wywolan)
+wynik_rosenbrock = rosenbrock(funkcja_t, punkt_startowy, kroki_startowe, alfa_rosen, 0.5, epsilon, maks_wywolan)
 print("Optymalny punkt (Rosenbrock):", wynik_rosenbrock)
