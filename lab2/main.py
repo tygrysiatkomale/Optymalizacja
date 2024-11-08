@@ -4,15 +4,14 @@ from scipy.integrate import simps  # Do całkowania numerycznego
 from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
 
-
-def funkcja_t(x):
-    x1, x2 = x
-    return (x1 + 3) ** 2 + (x2 -2) ** 2
+# # funkcja sluzaca do sprawdzania poprawnosci dzialania metod, znamy jej minima
+# def funkcja_t(x):
+#     x1, x2 = x
+#     return (x1 + 3) ** 2 + (x2 -2) ** 2
 
 # Funkcja testowa
 def funkcja_testowa(x):
     """
-    Funkcja testowa do optymalizacji:
     f(x1, x2) = x1^2 + x2^2 - cos(2.5 * pi * x1) - cos(2.5 * pi * x2) + 2
     """
     x1, x2 = x
@@ -61,29 +60,20 @@ omega_desired = 0.0  # żądana prędkość kątowa
 
 
 # Parametry optymalizacji
-# punkt_startowy = [0.5, 0.5]
-krok_startowy = 0.1     # dla hooke_jeeves jest ta zmienna
-alfa_hooke = 0.5
-alfa_rosen = 1.5
+# punkt_startowy = [0.5, 0.5]       #ten pkt startowy sluzyl sprawdzeniu poprawnosci dzialania metod
+
+alfa_hooke = 0.5        # wieksza od 0, mniejsza od 1
+alfa_rosen = 1.5        # wieksza od 1
+beta = 0.5          # wieksza od 0, mniejsza od 1
 epsilon = 1e-6
-maks_wywolan = 1000
+maks_wywolan = 100
+
+krok_startowy = 0.1     # dla hooke_jeeves jest ta zmienna
 kroki_startowe = [0.1, 0.1]      # dla rosenbrocka jest ta zmienna
-beta = 0.5
+
 
 # Losowanie punktu początkowego z przedziału [-1, 1]
 punkt_startowy = np.random.uniform(-1, 1, size=2)
-# w hooke alfa mniejsza od 1
-# w rosenbrock alfa wieksza od 1
-
-# # Optymalizacja metodą Hooke-Jeevesa
-# wynik_hooke_jeeves = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
-# print("Optymalny punkt (Hooke-Jeeves):", wynik_hooke_jeeves)
-#
-# # Optymalizacja metodą Rosenbrocka
-# kroki_startowe = [0.1, 0.1]
-# wynik_rosenbrock = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, 0.5, epsilon, maks_wywolan)
-# print("Optymalny punkt (Rosenbrock):", wynik_rosenbrock)
-
 
 '''
 To co znajduje się poniżej  ma się znaleźć w excelu w Tabeli 1,
