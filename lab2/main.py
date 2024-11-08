@@ -19,7 +19,7 @@ def funkcja_testowa(x):
 
 
 # Funkcja kosztu dla ramienia robota
-def funkcja_kosztu(k):
+def funkcja_celu(k):
     """
     Funkcja kosztu dla optymalizacji współczynników k1 i k2.
     Parametry:
@@ -111,7 +111,7 @@ print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
 print(f"Znaleziony punkt optymalny: x1* = {wynik_rosenbrock[0]:}, x2* = {wynik_rosenbrock[1]:}")
 print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
 print(f"Wartość funkcji celu w punkcie (y*): {y_rosenbrock:}")
-
+print("")
 '''
 Tabela 2
  Trzeba wpisac długości kroku, dla których byla optymalizacja, 
@@ -120,14 +120,41 @@ Tabela 2
  jeszcze nie wiem jak, ale mozna zrobic jakas funkcje ktora oblicza te wartosci srednie dla minimow globalnych
  i wpisac recznie tw wyniki
 '''
+
 '''
 Wykres
 na razie myśle jak sie najlatwiej dostac do tego zeby latwo to wrzucic do excela
 do tego, czyli nr iteracji i jakie wychodza wartosci x1* i x2* dla dwoch metod
 jakis zaczatek tego jest wewnatrz metody rosenbrocka, ale cos sie wywala XD
 '''
+
 '''
 Tabela 3
 zwiazana jest juz z problemem rzeczywistym, mozna wpisac recznie,
  wszystko co potrzebne bedzie wyprintowane
+ (wyniki do konsultacji)
 '''
+# Optymalizacja metodą Hooke-Jeevesa
+wynik_hooke, liczba_wywolan_hooke = hooke_jeeves(
+    funkcja_celu, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan
+)
+Q_hooke = funkcja_celu(wynik_hooke)
+
+# Optymalizacja metodą Rosenbrocka
+wynik_rosen, liczba_wywolan_rosen = rosenbrock(
+    funkcja_celu, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan
+)
+Q_rosen = funkcja_celu(wynik_rosen)
+
+# Wyświetlenie wyników
+print("=== Wyniki optymalizacji dla problemu rzeczywistego ===")
+print("Dla długości kroku:", krok_startowy)
+print("--- Metoda Hooke-Jeevesa ---")
+print(f"k1* = {wynik_hooke[0]}, k2* = {wynik_hooke[1]}")
+print(f"Q* = {Q_hooke}")
+print(f"Liczba wywołań funkcji celu: {liczba_wywolan_hooke}")
+
+print("--- Metoda Rosenbrocka ---")
+print(f"k1* = {wynik_rosen[0]}, k2* = {wynik_rosen[1]}")
+print(f"Q* = {Q_rosen}")
+print(f"Liczba wywołań funkcji celu: {liczba_wywolan_rosen}")
