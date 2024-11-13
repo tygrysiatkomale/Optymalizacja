@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import simpson
 from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
+from excel import add_to_excel
 
 
 def funkcja_testowa(x):
@@ -63,13 +64,6 @@ beta = 0.5          # wieksza od 0, mniejsza od 1
 epsilon = 1e-6
 maks_wywolan = 100
 
-krok_startowy = 0.1     # dla hooke_jeeves jest ta zmienna
-kroki_startowe = [0.1, 0.1]      # dla rosenbrocka jest ta zmienna
-
-
-# Losowanie punktu początkowego z przedziału [-1, 1]
-punkt_startowy = np.random.uniform(-1, 1, size=2)
-
 '''
 To co znajduje się poniżej  ma się znaleźć w excelu w Tabeli 1,
 Wykonujemy 100 optymalizacji (na razie nie ma pętli, żeby weryfikować wyniki)
@@ -88,23 +82,44 @@ wartość kroków startowych może wynosić [0.2, 0.2], [0.3, 0.3] (nie pomylic 
 
 '''
 
-wynik_hooke_jeeves, liczba_wywolan = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
-y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
+krok_startowy = 0.1     # dla hooke_jeeves jest ta zmienna
+kroki_startowe = [0.1, 0.1]      # dla rosenbrocka jest ta zmienna
+
+for i in range (3, 303):
+    if (i < 103) and (i > 0):
+        krok_startowy = 0.1
+        kroki_startowe = [0.1, 0.1]
+    elif (i >= 103) and (i < 203):
+        krok_startowy = 0.3
+        kroki_startowe = [0.3, 0.3]
+    elif (i >= 203) and (i < 303):
+        krok_startowy = 0.5
+        kroki_startowe = [0.5, 0.5]
+
+    # Losowanie punktu początkowego z przedziału [-1, 1]
+    punkt_startowy = np.random.uniform(-1, 1, size=2)
+
+    wynik_hooke_jeeves, liczba_wywolan_h = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
+    y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
+
+    wynik_rosenbrock, liczba_wywolan_r = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan)
+    y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
+
+    add_to_excel(punkt_startowy[0], punkt_startowy[1],
+                 wynik_hooke_jeeves[0], wynik_hooke_jeeves[1], y_hooke_jeeves, liczba_wywolan_h,
+                 wynik_rosenbrock[0], wynik_rosenbrock[1], y_rosenbrock, liczba_wywolan_r, i)
 
 print("Optymalizacja dla testowej funkcji:")
 print("Wyniki optymalizacji metodą Hooke-Jeevesa: ")
 print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
 print(f"Znaleziony punkt optymalny: x1* = {wynik_hooke_jeeves[0]} i x2* = {wynik_hooke_jeeves[1]}")
-print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
+print(f"Liczba wywolan funkcji celu: {liczba_wywolan_h}")
 print(f"Wartość funkcji celu w punkcie (y*): {y_hooke_jeeves}")
-
-wynik_rosenbrock, liczba_wywolan = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan)
-y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
 
 print("Wyniki optymalizacji metodą Rosenbrocka: ")
 print(f"Punkt startowy: x1 = {punkt_startowy[0]}, x2 = {punkt_startowy[1]}")
 print(f"Znaleziony punkt optymalny: x1* = {wynik_rosenbrock[0]:}, x2* = {wynik_rosenbrock[1]:}")
-print(f"Liczba wywolan funkcji celu: {liczba_wywolan}")
+print(f"Liczba wywolan funkcji celu: {liczba_wywolan_r}")
 print(f"Wartość funkcji celu w punkcie (y*): {y_rosenbrock:}")
 print("")
 
