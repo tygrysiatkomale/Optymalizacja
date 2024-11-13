@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.integrate import simps
+from scipy.integrate import simpson
 from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
 
@@ -38,7 +38,7 @@ def funkcja_celu(k, return_full=False):
 
     # Funkcja kosztu obliczana metodą prostokątów
     integrand = 10 * (alpha_desired - alpha) ** 2 + (omega_desired - omega) ** 2 + M ** 2
-    Q = simps(integrand, czas)  # całkowanie numeryczne
+    Q = simpson(integrand, x=czas)  # całkowanie numeryczne
 
     if return_full:
         return czas, alpha, omega
