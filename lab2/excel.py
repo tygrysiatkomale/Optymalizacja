@@ -1,3 +1,5 @@
+from turtledemo.chaos import line
+
 from openpyxl import Workbook, load_workbook
 
 
@@ -30,3 +32,22 @@ def add_to_excel(start_x1, start_x2, hookey_x1, hookey_x2, hookey_y, hookey_coun
     # Zapisujemy zmiany w pliku
     workbook.save(file_name)
     # print(f"Wartości zostały zapisane do pliku {file_name} w linii {line}")
+
+
+def add_to_chart_excel_hooke(x1, x2, line):
+    file_name = "xlsx2.xlsx"
+    workbook = load_workbook(file_name)
+    sheet = workbook["Wykres"]
+    sheet[f'B{line}'] = x1
+    sheet[f'C{line}'] = x2
+    workbook.save(file_name)
+
+
+def add_to_chart_excel_rosen(x1, x2, line):
+    file_name = "xlsx2.xlsx"
+    workbook = load_workbook(file_name)
+    sheet = workbook["Wykres"]
+    sheet[f'D{line}'] = x1
+    sheet[f'E{line}'] = x2
+    workbook.save(file_name)
+    

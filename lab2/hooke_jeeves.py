@@ -1,4 +1,5 @@
 import numpy as np
+from excel import add_to_chart_excel_hooke
 
 
 def hooke_jeeves(funkcja, punkt_startowy, krok_startowy, alfa, epsilon, maks_wywolan):
@@ -35,11 +36,15 @@ def hooke_jeeves(funkcja, punkt_startowy, krok_startowy, alfa, epsilon, maks_wyw
             while funkcja(xN) < funkcja(xB):
                 xB = xN
                 xN = probuj(xB + (xB - punkt_startowy), s)
+                # print(f"fcall: {liczba_wywolan}, x1: {xB[0]}, x2: {xB[1]}")
+                # add_to_chart_excel_hooke(xB[0], xB[1], liczba_wywolan+3)
                 liczba_wywolan += 1
                 if liczba_wywolan >= maks_wywolan:
                     break
         else:
             s *= alfa
+            # print(f"fcall: {liczba_wywolan}, x1: {xB[0]}, x2: {xB[1]}")
+            # add_to_chart_excel_hooke(xB[0], xB[1], liczba_wywolan + 3)
             liczba_wywolan += 1         # liczba wywolan czyli fcalls
 
     return xB, liczba_wywolan

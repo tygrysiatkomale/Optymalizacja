@@ -1,4 +1,5 @@
 import numpy as np
+from excel import add_to_chart_excel_rosen
 
 # globalna lista na wyniki operacji
 wyniki_iteracji = []
@@ -48,6 +49,8 @@ def rosenbrock(funkcja, punkt_startowy, kroki_startowe, alfa, beta, epsilon, mak
             else:
                 p[j] += 1
                 s[j] *= -beta
+            # add_to_chart_excel_rosen(xB[0], xB[1], liczba_wywolan+3)
+            # print(f"fcall: {liczba_wywolan}, x1: {xB[0]}, x2: {xB[1]}")
             liczba_wywolan += 1
             if liczba_wywolan >= maks_wywolan:
                 break
