@@ -50,4 +50,12 @@ def add_to_chart_excel_rosen(x1, x2, line):
     sheet[f'D{line}'] = x1
     sheet[f'E{line}'] = x2
     workbook.save(file_name)
-    
+
+
+def add_to_sym(column_a, column_b, alpfa, omega, line):
+    file_name = "xlsx2.xlsx"
+    workbook = load_workbook(file_name)
+    sheet = workbook["Symulacja"]
+    sheet[f'{column_a}{line}'] = alpfa
+    sheet[f'{column_b}{line}'] = omega
+    workbook.save(file_name)

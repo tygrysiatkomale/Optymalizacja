@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from scipy.integrate import simpson
 from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
-from excel import add_to_excel
+from excel import add_to_excel, add_to_sym
 
 
 def funkcja_testowa(x):
@@ -201,14 +201,20 @@ czas_HJ, alpha_HJ, omega_HJ = funkcja_celu(wynik_hooke, return_full=True)
 czas_rosen, alpha_rosen, omega_rosen = funkcja_celu(wynik_rosen, return_full=True)
 print("Wyniki symulacji dla metody Hooke-Jeevesa:  ")
 print("Czas (t), Kąt (α), Prędkość kątowa (ω)")
+index = 0
 for t, a, w in zip(czas_HJ[:100], alpha_HJ[:100], omega_HJ[:100]):  # Ograniczenie do 100 próbek
+    # add_to_sym("B", "C", a, w, index + 3)
+    index += 1
     print(f"{t:.2f}, {a:.6f}, {w:.6f}")
 
 print("")
 
 print("Wyniki symulacji dla metody Rosenbrocka: ")
 print("Czas (t), Kąt (α), Prędkość kątowa (ω)")
+index = 0
 for t, a, w in zip(czas_rosen[:100], alpha_rosen[:100], omega_rosen[:100]):  # Ograniczenie do 100 próbek
+    # add_to_sym("D", "E", a, w, index+3)
+    index += 1
     print(f"{t:.2f}, {a:.6f}, {w:.6f}")
 
 """
