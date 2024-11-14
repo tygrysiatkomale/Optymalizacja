@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib import pyplot as plt
 from scipy.integrate import simpson
 from rosenbrock import rosenbrock, wyniki_iteracji
 from hooke_jeeves import hooke_jeeves
@@ -62,7 +63,7 @@ alfa_hooke = 0.5        # wieksza od 0, mniejsza od 1
 alfa_rosen = 1.5        # wieksza od 1
 beta = 0.5          # wieksza od 0, mniejsza od 1
 epsilon = 1e-6
-maks_wywolan = 100
+maks_wywolan = 1000
 
 '''
 To co znajduje się poniżej  ma się znaleźć w excelu w Tabeli 1,
@@ -81,33 +82,48 @@ różnica:
 wartość kroków startowych może wynosić [0.2, 0.2], [0.3, 0.3] (nie pomylic ze tu jest tablica z dwoma wartosciami)
 
 '''
-
+punkt_startowy = np.random.uniform(-1, 1, size=2)
 krok_startowy = 0.1     # dla hooke_jeeves jest ta zmienna
 kroki_startowe = [0.1, 0.1]      # dla rosenbrocka jest ta zmienna
 
-for i in range (3, 303):
-    if (i < 103) and (i > 0):
-        krok_startowy = 0.1
-        kroki_startowe = [0.1, 0.1]
-    elif (i >= 103) and (i < 203):
-        krok_startowy = 0.3
-        kroki_startowe = [0.3, 0.3]
-    elif (i >= 203) and (i < 303):
-        krok_startowy = 0.5
-        kroki_startowe = [0.5, 0.5]
+"""
+Dodawanie do excela ponizej ktore trwa mega dlugo 
+"""
+# for i in range(3, 303):
+#     if (i < 103) and (i > 0):
+#         krok_startowy = 0.1
+#         kroki_startowe = [0.1, 0.1]
+#     elif (i >= 103) and (i < 203):
+#         krok_startowy = 0.3
+#         kroki_startowe = [0.3, 0.3]
+#     elif (i >= 203) and (i < 303):
+#         krok_startowy = 0.5
+#         kroki_startowe = [0.5, 0.5]
+#
+#     # Losowanie punktu początkowego z przedziału [-1, 1]
+#     punkt_startowy = np.random.uniform(-1, 1, size=2)
+#
+#     wynik_hooke_jeeves, liczba_wywolan_h = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke,
+#                                                         epsilon, maks_wywolan)
+#     y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
+#
+#     wynik_rosenbrock, liczba_wywolan_r = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta,
+#                                                     epsilon, maks_wywolan)
+#     y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
+#
+#     add_to_excel(punkt_startowy[0], punkt_startowy[1],
+#                  wynik_hooke_jeeves[0], wynik_hooke_jeeves[1], y_hooke_jeeves, liczba_wywolan_h,
+#                  wynik_rosenbrock[0], wynik_rosenbrock[1], y_rosenbrock, liczba_wywolan_r, i)
 
-    # Losowanie punktu początkowego z przedziału [-1, 1]
-    punkt_startowy = np.random.uniform(-1, 1, size=2)
+"""
+Tu się kończy dodawanie do excela ^^
+"""
 
-    wynik_hooke_jeeves, liczba_wywolan_h = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
-    y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
+wynik_hooke_jeeves, liczba_wywolan_h = hooke_jeeves(funkcja_testowa, punkt_startowy, krok_startowy, alfa_hooke, epsilon, maks_wywolan)
+y_hooke_jeeves = funkcja_testowa(wynik_hooke_jeeves)
 
-    wynik_rosenbrock, liczba_wywolan_r = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan)
-    y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
-
-    add_to_excel(punkt_startowy[0], punkt_startowy[1],
-                 wynik_hooke_jeeves[0], wynik_hooke_jeeves[1], y_hooke_jeeves, liczba_wywolan_h,
-                 wynik_rosenbrock[0], wynik_rosenbrock[1], y_rosenbrock, liczba_wywolan_r, i)
+wynik_rosenbrock, liczba_wywolan_r = rosenbrock(funkcja_testowa, punkt_startowy, kroki_startowe, alfa_rosen, beta, epsilon, maks_wywolan)
+y_rosenbrock = funkcja_testowa(wynik_rosenbrock)
 
 print("Optymalizacja dla testowej funkcji:")
 print("Wyniki optymalizacji metodą Hooke-Jeevesa: ")
@@ -194,3 +210,21 @@ print("Wyniki symulacji dla metody Rosenbrocka: ")
 print("Czas (t), Kąt (α), Prędkość kątowa (ω)")
 for t, a, w in zip(czas_rosen[:100], alpha_rosen[:100], omega_rosen[:100]):  # Ograniczenie do 100 próbek
     print(f"{t:.2f}, {a:.6f}, {w:.6f}")
+
+"""
+Rysowanie wykresu 3D dla funkcji testowej w zakresie x od -1 do 1
+"""
+# x = np.linspace(-1, 1, 201)
+# x1_grid, x2_grid = np.meshgrid(x, x)
+# z = x1_grid**2 + x2_grid**2 - np.cos(2.5 * np.pi * x1_grid) - np.cos(2.5 * np.pi * x2_grid) + 2
+#
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# ax.plot_surface(x1_grid, x2_grid, z, cmap="viridis_r")
+#
+# ax.set_xlabel('x1')
+# ax.set_ylabel('x2')
+# ax.set_zlabel('f(x1, x2)')
+# ax.set_title('Wykres funkcji testowej')
+#
+# plt.show()

@@ -20,12 +20,12 @@ def add_to_excel(start_x1, start_x2, hookey_x1, hookey_x2, hookey_y, hookey_coun
     sheet[f'F{line}'] = hookey_x2
     sheet[f'G{line}'] = hookey_y
     sheet[f'H{line}'] = hookey_count
-    sheet[f'I{line}'] = ""
+    sheet[f'I{line}'] = "Globalne" if hookey_y < 0.01 else "Lokalne"
     sheet[f'J{line}'] = rosen_x1
     sheet[f'K{line}'] = rosen_x2
     sheet[f'L{line}'] = rosen_y
     sheet[f'M{line}'] = rosen_count
-    sheet[f'N{line}'] = ""
+    sheet[f'N{line}'] = "Globalne" if rosen_y < 0.01 else "Lokalne"
 
     # Zapisujemy zmiany w pliku
     workbook.save(file_name)
