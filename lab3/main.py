@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def test_fun(x1, x2):
+def funkcja_testowa(x1, x2):
     """
     :epsilon: mega mala wartosc do unikniecia dzielenia przez zero
     :top: gorna wartosc dla funkcji testowej
@@ -17,7 +17,7 @@ def test_fun(x1, x2):
 def make_test_function_chart():
     x1, x2 = np.linspace(1, 6, 501), np.linspace(1, 6, 501)
     x1_grid, x2_grid = np.meshgrid(x1, x2)
-    z = test_fun(x1_grid, x2_grid)
+    z = funkcja_testowa(x1_grid, x2_grid)
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
