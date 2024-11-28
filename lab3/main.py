@@ -97,7 +97,22 @@ def check_constraints(x, a):
     g3 = np.linalg.norm(x) - a
     return g1, g2, g3
 
+# ----------------------
+# dane do problemu rzeczywistego
+# stale fizyczne  i parametry problemu
+g = 9.81  # Przyspieszenie grawitacyjne, m/s^2
+m = 0.6   # Masa piłki, kg
+r = 0.12  # Promień piłki, m
+rho = 1.2  # Gęstość powietrza, kg/m^3
+C_d = 0.47  # Współczynnik oporu aerodynamicznego
+S = np.pi * r**2  # Pole przekroju poprzecznego, m^2
+t_max = 7  # Maksymalny czas symulacji, s
+dt = 0.01  # Krok czasowy symulacji, s
+time_steps = np.arange(0, t_max + dt, dt)  # Kroki czasowe symulacji
 
+# poczatkowe warunki i ograniczenia
+bounds = [(-10, 10), (-15, 15)]  # Ograniczenia dla v0 i omega
+initial_v0, initial_omega = 5, 10  # Początkowe wartości prędkości i prędkości kątowej
 
 
 if __name__ == '__main__':
@@ -131,4 +146,9 @@ if __name__ == '__main__':
     result_int = funkcja_testowa_internal_penalty(x, a, c)
     print("Wewnętrzna funkcja kary:", result_int)
     print("Odległość od początku układu (r):", result_int)
+
+    '''
+    Tabela 3
+    Wyniki optymalizacji dla problemu rzeczywistego.
+    '''
 
