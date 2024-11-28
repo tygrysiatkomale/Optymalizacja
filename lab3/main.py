@@ -72,18 +72,19 @@ def funkcja_testowa_internal_penalty(x, a, c):
     # Inicjalizacja funkcji celu
     y = result
 
-    # Dodanie wewnętrznej funkcji kary
+    # Dodanie łagodniejszej wewnętrznej funkcji kary
     if -x[0] + 1 > 0 or -x[1] + 1 > 0 or np.linalg.norm(x) - a > 0:
-        return 1e9  # Ogromna wartość dla naruszenia ograniczeń
+        return 1e6  # Kara za wyjście poza obszar dopuszczalny (duża, ale nie ekstremalna)
     if -x[0] + 1 < 0:
-        y -= c / (-x[0] + 1)
+        y -= c / (1 + (-x[0] + 1))  # Łagodniejsza kara za naruszenie ograniczenia
     if -x[1] + 1 < 0:
-        y -= c / (-x[1] + 1)
+        y -= c / (1 + (-x[1] + 1))
     if np.linalg.norm(x) - a < 0:
-        y -= c / (np.linalg.norm(x) - a)
+        y -= c / (1 + (np.linalg.norm(x) - a))
 
     return y
 
+# definiuje ograniczenia
 def check_constraints(x, a):
     g1 = -x[0] + 1
     g2 = -x[1] + 1
