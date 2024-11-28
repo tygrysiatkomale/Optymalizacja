@@ -113,6 +113,10 @@ if __name__ == '__main__':
     'c' to wspolczynnik kary, wartosc raczej ok,
     trzeba podac wartosc 'r' (odleglosc punktu od poczatku ukladu wsporlzednych)
     ^ dodana jest dodatkowa linia w testowej funkcji z wew i zew karą
+    !!!!TRZEBA DODAC LICZBE WYWOLAN FUNKCJI CELU DO TESTOWEJ Z WEW I ZEW KARĄ!!!
+    
+    Tabela 2
+    Dodanie wartosci średnich dla kazdego 'a'
     '''
     x = np.array([0.5, 0.5])  # Wartości testowe zmiennych
     a = 5  # Parametr ograniczenia normy
@@ -128,5 +132,3 @@ if __name__ == '__main__':
     print("Wewnętrzna funkcja kary:", result_int)
     print("Odległość od początku układu (r):", result_int)
 
-    constraints = check_constraints(x, a)
-    print("Ograniczenia (g1, g2, g3):", constraints)
