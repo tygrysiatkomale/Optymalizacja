@@ -47,6 +47,9 @@ def funkcja_testowa_external_penalty(x, a, c):
     # Inicjalizacja funkcji celu
     y = result
 
+    # Obliczenie odległości od początku układu współrzędnych
+    r = np.linalg.norm(x)  # r = sqrt(x1^2 + x2^2)
+
     # Dodanie zewnętrznej funkcji kary
     if -x[0] + 1 > 0:
         y += c * (-x[0] + 1)**2
@@ -55,7 +58,7 @@ def funkcja_testowa_external_penalty(x, a, c):
     if np.linalg.norm(x) - a > 0:
         y += c * (np.linalg.norm(x) - a)**2
 
-    return y
+    return y, r
 
 # f.testowa z wewnetrzna kara
 def funkcja_testowa_internal_penalty(x, a, c):
@@ -72,6 +75,9 @@ def funkcja_testowa_internal_penalty(x, a, c):
     # Inicjalizacja funkcji celu
     y = result
 
+    # Obliczenie odległości od początku układu współrzędnych
+    r = np.linalg.norm(x)  # r = sqrt(x1^2 + x2^2)
+
     # Dodanie łagodniejszej wewnętrznej funkcji kary
     if -x[0] + 1 > 0 or -x[1] + 1 > 0 or np.linalg.norm(x) - a > 0:
         return 1e6  # Kara za wyjście poza obszar dopuszczalny (duża, ale nie ekstremalna)
@@ -82,7 +88,7 @@ def funkcja_testowa_internal_penalty(x, a, c):
     if np.linalg.norm(x) - a < 0:
         y -= c / (1 + (np.linalg.norm(x) - a))
 
-    return y
+    return y, r
 
 # definiuje ograniczenia
 def check_constraints(x, a):
@@ -97,17 +103,30 @@ def check_constraints(x, a):
 if __name__ == '__main__':
     # make_test_function_chart()
     # pass
+
+    '''
+    Tabela 1
+    Poniżej wartości do optymalizacji funkcji testowej, trzeba zrobic 100 optymalizacji.
+    Trzeba to zrobic zarowno dla funkcji testowej z wewnetrzna i zewnetrzna kara.
+    Z instrukcji -> punkt startowy musi byc randomowy, ale z obszaru dopuszczalnego.
+    Mamy to zrobić dla każdej wartości parametru 'a', czyli: 4; 4,4934; 5.
+    'c' to wspolczynnik kary, wartosc raczej ok,
+    trzeba podac wartosc 'r' (odleglosc punktu od poczatku ukladu wsporlzednych)
+    ^ dodana jest dodatkowa linia w testowej funkcji z wew i zew karą
+    '''
     x = np.array([0.5, 0.5])  # Wartości testowe zmiennych
     a = 5  # Parametr ograniczenia normy
-    c = 10 # Współczynnik kary
+    c = 1000 # Współczynnik kary
 
     # Test zewnętrznej funkcji kary
     result_ext = funkcja_testowa_external_penalty(x, a, c)
     print("Zewnętrzna funkcja kary:", result_ext)
+    print("Odległość od początku układu (r):", result_ext)
 
     # Test wewnętrznej funkcji kary
     result_int = funkcja_testowa_internal_penalty(x, a, c)
     print("Wewnętrzna funkcja kary:", result_int)
+    print("Odległość od początku układu (r):", result_int)
 
     constraints = check_constraints(x, a)
     print("Ograniczenia (g1, g2, g3):", constraints)
