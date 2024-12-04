@@ -7,7 +7,7 @@ def add_to_excel(x1, x2,
                  x1_zew, x2_zew, r_zew, y_zew, n_zew,
                  x1_wew, x2_wew, r_wew, y_wew, n_wew,
                  line):
-    file_name = "xlsx2.xlsx"
+    file_name = "xlsx3.xlsx"
     try:
         # Próba załadowania istniejącego pliku
         workbook = load_workbook(file_name)
