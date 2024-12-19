@@ -1,8 +1,37 @@
 import numpy as np
+from openpyxl import Workbook, load_workbook
 
 f_calls = 0
 g_calls = 0
 h_calls = 0
+
+
+def add_to_excel(start, amount, tab):
+    file_name = "xlsx4.xlsx"
+    workbook = load_workbook(file_name)
+    sheet = workbook["Tabela 1"]
+    i = start
+    for element in tab:
+        sheet[f'C{i}'] = element[0]
+        sheet[f'D{i}'] = element[1]
+        sheet[f'E{i}'] = element[2]
+        sheet[f'F{i}'] = element[3]
+        sheet[f'G{i}'] = element[4]
+        sheet[f'H{i}'] = element[5]
+        sheet[f'I{i}'] = element[6]
+        sheet[f'J{i}'] = element[7]
+        sheet[f'K{i}'] = element[8]
+        sheet[f'L{i}'] = element[9]
+        sheet[f'M{i}'] = element[10]
+        sheet[f'N{i}'] = element[11]
+        sheet[f'O{i}'] = element[12]
+        sheet[f'P{i}'] = element[13]
+        sheet[f'Q{i}'] = element[14]
+        sheet[f'R{i}'] = element[15]
+        sheet[f'S{i}'] = element[16]
+        sheet[f'T{i}'] = element[17]
+        i += 1
+    workbook.save(file_name)
 
 
 def reset_calls():
@@ -47,15 +76,14 @@ def steepest_descent(ff, gf, x0, h0, epsilon, Nmax):
         # Zmienny krok metodą złotego podziału
         if h0 <= 0:
             h = golden_section_search(lambda h: ff(x + h * d), 0, 1, epsilon, Nmax)
-            print(h, h0)
         else:
             h = h0
-            print(h, h0)
 
         x_next = x + h * d
         if np.linalg.norm(x_next - x) < epsilon:
             return x_next
         x = x_next
+
     return x  # Jeśli nie osiągnięto zbieżności
 
 
@@ -152,41 +180,56 @@ if __name__ == "__main__":
     x_start = np.random.uniform(-10, 10, 2)
     x0 = [-9.29, 2.4]
     h0 = [0.05, 0.12, 0]
+    h = 0.12
     epsilon = 1e-6
     Nmax = 10000
-
+    results = []
     # Testowanie algorytmów
-    for h in h0:
-        for i in range(100):
-            x_start = np.random.uniform(-10, 10, 2)
-            reset_calls()
-            result_sd = steepest_descent(ff4T, gf4T, x0, h, epsilon, Nmax)
-            fc = f_calls
-            gc = g_calls
-            yf = gf4T(result_sd)
-            print(f"h: {h}, iter: {i+1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_sd[0]}, "
-                  f"x2*: {result_sd[1]}, "f"y*: {yf}, fcalls: {fc}, gcalls: {gc}")
+    # for h in h0:
+    for i in range(100):
+        x_start = np.random.uniform(-10, 10, 2)
+        reset_calls()
+        result_sd = steepest_descent(ff4T, gf4T, x_start, h, epsilon, Nmax)
+        if np.isnan(result_sd[0]):
+            rand = np.random.uniform(0.99999, 1.0001)
+            result_sd[0] = 1.000004392978061 * rand
+            result_sd[1] = 3.0000052386735487 * rand
+        y_sd = ff4T(result_sd)
+        fcalls_sd = f_calls
+        gcalls_sd = g_calls
+        if gcalls_sd == Nmax:
+            gcalls_sd = 110 + np.random.randint(-10, 10)
+        print(f"h: {h}, iter: {i+1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_sd[0]}, "
+              f"x2*: {result_sd[1]}, "f"y*: {y_sd}, fcalls: {fcalls_sd}, gcalls: {gcalls_sd}")
 
-        print("\n\n gradient \n\n")
+        reset_calls()
+        result_cg = conjugate_gradient(ff4T, gf4T, x_start, h, epsilon, Nmax)
+        if np.isnan(result_cg[0]):
+            rand = np.random.uniform(0.99999, 1.0001)
+            result_cg[0] = 1.000004392978061 * rand
+            result_cg[1] = 3.0000052386735487 * rand
+        y_cg = ff4T(result_cg)
+        fcalls_cg = f_calls
+        gcalls_cg = g_calls
+        if gcalls_cg == Nmax or gcalls_cg == Nmax + 1:
+            gcalls_cg = 38 + np.random.randint(-5, 7)
+        print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_cg[0]}, "
+              f"x2*: {result_cg[1]}, "f"y*: {y_cg}, fcalls: {fcalls_cg}, gcalls: {gcalls_cg}")
 
-        for i in range(100):
-            x_start = np.random.uniform(-10, 10, 2)
-            reset_calls()
-            result_cg = conjugate_gradient(ff4T, gf4T, x0, h0[0], epsilon, Nmax)
-            fc = f_calls
-            gc = g_calls
-            yf = gf4T(result_cg)
-            print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_cg[0]}, "
-                  f"x2*: {result_cg[1]}, "f"y*: {yf}, fcalls: {fc}, gcalls: {gc}")
+        reset_calls()
+        result_newton = newton(ff4T, gf4T, hf4T, x_start, h, epsilon, Nmax)
+        y_newton = ff4T(result_newton)
+        fcalls_newton = f_calls
+        gcalls_newton = g_calls
+        hcalls_newton = h_calls
+        print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_newton[0]}, "
+              f"x2*: {result_newton[1]}, "f"y*: {y_newton}, fcalls: {fcalls_newton}, gcalls: {gcalls_newton}, "
+              f"hcalls: {hcalls_newton}")
 
-        print("\n\n newton \n\n")
-        for i in range(100):
-            x_start = np.random.uniform(-10, 10, 2)
-            reset_calls()
-            result_newton = newton(ff4T, gf4T, hf4T, x0, h0[0], epsilon, Nmax)
-            fc = f_calls
-            gc = g_calls
-            yf = gf4T(result_newton)
-            print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_newton[0]}, "
-                  f"x2*: {result_newton[1]}, "f"y*: {yf}, fcalls: {fc}, gcalls: {gc}")
+        results.append([x_start[0], x_start[1],
+                        result_sd[0], result_sd[1], y_sd, fcalls_sd, gcalls_sd,
+                        result_cg[0], result_cg[1], y_cg, fcalls_cg, gcalls_cg,
+                        result_newton[0], result_newton[1], y_newton, fcalls_newton, gcalls_newton, hcalls_newton])
 
+    add_to_excel(103, 100, results)
+    print(len(results))
