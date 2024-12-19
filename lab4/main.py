@@ -180,7 +180,7 @@ if __name__ == "__main__":
     x_start = np.random.uniform(-10, 10, 2)
     x0 = [-9.29, 2.4]
     h0 = [0.05, 0.12, 0]
-    h = 0.12
+    h = 0
     epsilon = 1e-6
     Nmax = 10000
     results = []
@@ -190,29 +190,18 @@ if __name__ == "__main__":
         x_start = np.random.uniform(-10, 10, 2)
         reset_calls()
         result_sd = steepest_descent(ff4T, gf4T, x_start, h, epsilon, Nmax)
-        if np.isnan(result_sd[0]):
-            rand = np.random.uniform(0.99999, 1.0001)
-            result_sd[0] = 1.000004392978061 * rand
-            result_sd[1] = 3.0000052386735487 * rand
         y_sd = ff4T(result_sd)
         fcalls_sd = f_calls
         gcalls_sd = g_calls
-        if gcalls_sd == Nmax:
-            gcalls_sd = 110 + np.random.randint(-10, 10)
         print(f"h: {h}, iter: {i+1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_sd[0]}, "
               f"x2*: {result_sd[1]}, "f"y*: {y_sd}, fcalls: {fcalls_sd}, gcalls: {gcalls_sd}")
 
         reset_calls()
         result_cg = conjugate_gradient(ff4T, gf4T, x_start, h, epsilon, Nmax)
-        if np.isnan(result_cg[0]):
-            rand = np.random.uniform(0.99999, 1.0001)
-            result_cg[0] = 1.000004392978061 * rand
-            result_cg[1] = 3.0000052386735487 * rand
         y_cg = ff4T(result_cg)
         fcalls_cg = f_calls
         gcalls_cg = g_calls
-        if gcalls_cg == Nmax or gcalls_cg == Nmax + 1:
-            gcalls_cg = 38 + np.random.randint(-5, 7)
+
         print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_cg[0]}, "
               f"x2*: {result_cg[1]}, "f"y*: {y_cg}, fcalls: {fcalls_cg}, gcalls: {gcalls_cg}")
 
@@ -231,5 +220,5 @@ if __name__ == "__main__":
                         result_cg[0], result_cg[1], y_cg, fcalls_cg, gcalls_cg,
                         result_newton[0], result_newton[1], y_newton, fcalls_newton, gcalls_newton, hcalls_newton])
 
-    add_to_excel(103, 100, results)
+    add_to_excel(203, 100, results)
     print(len(results))
