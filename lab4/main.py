@@ -165,6 +165,8 @@ def ff4R(theta, X, Y):
 
 # Gradient funkcji kosztu dla problemu rzeczywistego
 def gf4R(theta, X, Y):
+    global g_calls
+    g_calls += 1
     m = len(Y)
     grad = np.zeros(theta.shape)
     for i in range(m):
@@ -186,39 +188,62 @@ if __name__ == "__main__":
     results = []
     # Testowanie algorytmów
     # for h in h0:
-    for i in range(100):
-        x_start = np.random.uniform(-10, 10, 2)
+    # for i in range(100):
+    #     x_start = np.random.uniform(-10, 10, 2)
+    #     reset_calls()
+    #     result_sd = steepest_descent(ff4T, gf4T, x_start, h, epsilon, Nmax)
+    #     y_sd = ff4T(result_sd)
+    #     fcalls_sd = f_calls
+    #     gcalls_sd = g_calls
+    #     print(f"h: {h}, iter: {i+1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_sd[0]}, "
+    #           f"x2*: {result_sd[1]}, "f"y*: {y_sd}, fcalls: {fcalls_sd}, gcalls: {gcalls_sd}")
+    #
+    #     reset_calls()
+    #     result_cg = conjugate_gradient(ff4T, gf4T, x_start, h, epsilon, Nmax)
+    #     y_cg = ff4T(result_cg)
+    #     fcalls_cg = f_calls
+    #     gcalls_cg = g_calls
+    #
+    #     print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_cg[0]}, "
+    #           f"x2*: {result_cg[1]}, "f"y*: {y_cg}, fcalls: {fcalls_cg}, gcalls: {gcalls_cg}")
+    #
+    #     reset_calls()
+    #     result_newton = newton(ff4T, gf4T, hf4T, x_start, h, epsilon, Nmax)
+    #     y_newton = ff4T(result_newton)
+    #     fcalls_newton = f_calls
+    #     gcalls_newton = g_calls
+    #     hcalls_newton = h_calls
+    #     print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_newton[0]}, "
+    #           f"x2*: {result_newton[1]}, "f"y*: {y_newton}, fcalls: {fcalls_newton}, gcalls: {gcalls_newton}, "
+    #           f"hcalls: {hcalls_newton}")
+    #
+    #     results.append([x_start[0], x_start[1],
+    #                     result_sd[0], result_sd[1], y_sd, fcalls_sd, gcalls_sd,
+    #                     result_cg[0], result_cg[1], y_cg, fcalls_cg, gcalls_cg,
+    #                     result_newton[0], result_newton[1], y_newton, fcalls_newton, gcalls_newton, hcalls_newton])
+    #
+    # add_to_excel(203, 100, results)
+    # print(len(results))
+
+    theta0 = np.zeros(3)
+    hs = [0.01, 0.001, 0.0001]
+    m = 100  # Liczba przypadków
+    X = np.hstack((np.ones((m, 1)), np.random.rand(m, 2) * 10))  # Pierwsza kolumna: 1
+    Y = (X[:, 1] + X[:, 2] > 10).astype(int)  # Przykładowa klasyfikacja
+
+    # Tabela wyników
+    print("Długość kroku\tθ0*\tθ1*\tθ2*\tJ(θ*)\tP(θ*)\tg_calls")
+    for h in hs:
+        # Reset liczników
         reset_calls()
-        result_sd = steepest_descent(ff4T, gf4T, x_start, h, epsilon, Nmax)
-        y_sd = ff4T(result_sd)
-        fcalls_sd = f_calls
-        gcalls_sd = g_calls
-        print(f"h: {h}, iter: {i+1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_sd[0]}, "
-              f"x2*: {result_sd[1]}, "f"y*: {y_sd}, fcalls: {fcalls_sd}, gcalls: {gcalls_sd}")
 
-        reset_calls()
-        result_cg = conjugate_gradient(ff4T, gf4T, x_start, h, epsilon, Nmax)
-        y_cg = ff4T(result_cg)
-        fcalls_cg = f_calls
-        gcalls_cg = g_calls
+        # Optymalizacja
+        theta_star = conjugate_gradient(ff4R, gf4R, theta0, h, epsilon, Nmax)
 
-        print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_cg[0]}, "
-              f"x2*: {result_cg[1]}, "f"y*: {y_cg}, fcalls: {fcalls_cg}, gcalls: {gcalls_cg}")
+        # Wyniki
+        J_star = ff4R(theta_star, X, Y)  # Funkcja kosztu w punkcie optymalnym
+        predictions = sigmoid(theta_star, X) >= 0.5  # Hipoteza (klasyfikacja)
+        accuracy = np.mean(predictions == Y) * 100  # Dokładność
+        print(f"{h:.4f}\t{theta_star[0]:.5f}\t{theta_star[1]:.5f}\t{theta_star[2]:.5f}\t"
+              f"{J_star:.5f}\t{accuracy:.2f}\t{g_calls}")
 
-        reset_calls()
-        result_newton = newton(ff4T, gf4T, hf4T, x_start, h, epsilon, Nmax)
-        y_newton = ff4T(result_newton)
-        fcalls_newton = f_calls
-        gcalls_newton = g_calls
-        hcalls_newton = h_calls
-        print(f"h: {h}, iter: {i + 1}, x1: {x_start[0]}, x2: {x_start[1]}, x1*: {result_newton[0]}, "
-              f"x2*: {result_newton[1]}, "f"y*: {y_newton}, fcalls: {fcalls_newton}, gcalls: {gcalls_newton}, "
-              f"hcalls: {hcalls_newton}")
-
-        results.append([x_start[0], x_start[1],
-                        result_sd[0], result_sd[1], y_sd, fcalls_sd, gcalls_sd,
-                        result_cg[0], result_cg[1], y_cg, fcalls_cg, gcalls_cg,
-                        result_newton[0], result_newton[1], y_newton, fcalls_newton, gcalls_newton, hcalls_newton])
-
-    add_to_excel(203, 100, results)
-    print(len(results))
